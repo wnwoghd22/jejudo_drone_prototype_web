@@ -33,41 +33,49 @@ export class MainMenu extends React.Component<{}, MainMenuState> {
             'reservation',
             'my lessons'
         ];
-        const lessonMenu_kr = [
-            '예약',
-            '나의 수업'
-        ];
+        const lessonMenu_kr = new Map([
+            ['reservation', '예약' ],
+            ['my lessons', '나의 수업']
+        ]);
 
         return(
             <Menu inverted vertical fixed = {'left'}>
-                <Menu.Item>Menu
-                <Menu.Menu>
-                    <Menu.Item id = "announcements"
-                    key = "announcements"
-                    as = {NavLink}
-                    to = {
-                        { pathname: `/announcements`}
-                    }>
-                        공지사항
-                    </Menu.Item>
-                    <Menu.Item id = "lesson">
-                        수업
-                        <Menu.Menu id = "lessonMenu">
-                            <Menu.Menu>
-                                { lessonMenu.map(item =>
-                                <Menu.Item
-                                key = {item}
-                                as = {NavLink}
-                                to = {
-                                    { pathname: `/lesson/${item}`}
-                                }>
-                                    {lessonMenu_kr}
-                                </Menu.Item>
-                                )}
-                            </Menu.Menu>
-                        </Menu.Menu>
-                    </Menu.Item>
-                </Menu.Menu>
+                <Menu.Item as={Link} to={'/'}>
+                    Home
+                    <Icon name = 'home'/>
+                </Menu.Item>
+                <Menu.Item>
+                    Menu
+                    <Icon name = 'list'/>
+                    <Menu.Menu>
+                        <Menu.Item
+                        key = "announcements"
+                        as = {NavLink}
+                        to = {
+                            { pathname: `/announcements`}
+                        }>
+                            공지사항
+                        </Menu.Item>
+                        <Menu.Item>
+                            수업
+                            <div id = "lesson">  
+                                <Menu.Menu>
+                                    <Menu.Menu>
+                                        { lessonMenu.map(item =>
+                                        <Menu.Item
+                                        key = {item}
+                                        as = {NavLink}
+                                        to = {
+                                            { pathname: `/lesson/${item}`}
+                                        }>
+                                            {lessonMenu_kr.get(item)}
+                                        </Menu.Item>
+                                        )}
+                                    </Menu.Menu>
+                                </Menu.Menu> 
+                            </div>
+                        </Menu.Item>
+                    </Menu.Menu>
                 </Menu.Item>
             </Menu>
         );

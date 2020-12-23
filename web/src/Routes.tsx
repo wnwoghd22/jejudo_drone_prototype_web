@@ -14,9 +14,8 @@ const routes =
                 margin: '1rem 0 1rem 16rem'
             }
         }>
-            <SwitchBox />
+        <SwitchBox />
         </main>
-
     </div>
 </BrowserRouter>;
 

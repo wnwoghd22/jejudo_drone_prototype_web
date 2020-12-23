@@ -11,9 +11,14 @@ interface AnnounceStats {
 export class AnnounceList extends React.Component<AnnounceProps, AnnounceStats> {
     public render() {
         return  (
-            <List>
-                
-            </List>
+            <div>
+                <h1>공지 사항</h1>
+                <List>
+                    
+                </List>
+                <input id = "search"></input>
+                <button id = "searchBtn">검색</button>
+            </div>
         )
     }
 }

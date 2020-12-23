@@ -12,12 +12,16 @@ export class SwitchBox extends React.Component<any, any> {
         <Container>
             <Switch>
                 <Route
-                    exact = {true} path = '/announcement'
-                    render = { () => AnnounceList }
+                    exact = {true} path = '/announcements'
+                    component = { AnnounceList }
                 />
                 <Route
                     exact = {true} path = '/lesson/:menu'
-                    render = { () => LessonForm }
+                    component = { LessonForm }
+                />
+                <Route
+                    exact = {true} path = '/'
+                    render = { () => <h1>Main Menu</h1> }
                 />
             </Switch>
         </Container>
