@@ -6,9 +6,9 @@ interface LessonProps {
 
 };
 interface LessonStats {
-    announceList : []
+
 };
 
 export class LessonForm extends React.Component<any,any> {
-    public render = () => Calendar();
+    public render = () => Calendar({time: new Date()});
 }
