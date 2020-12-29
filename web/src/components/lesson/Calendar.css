@@ -1,0 +1,13 @@
+.calendar {
+    flex-grow: 1;
+}
+
+.row {
+    display: flex;
+    height: 50px;
+}
+
+.row_item {
+    float: left;
+    width: 14.2857143%;
+}
