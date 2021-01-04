@@ -13,8 +13,10 @@
   "dependencies": {
     "axios": "^0.21.1",
     "css-loader": "^5.0.1",
+    "firebaseui": "^4.7.1",
     "promise": "^8.1.0",
     "react": "^17.0.1",
+    "react-calendar": "^3.3.0",
     "react-dom": "^17.0.1",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",

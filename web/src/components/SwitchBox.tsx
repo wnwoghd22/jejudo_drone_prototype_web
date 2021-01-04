@@ -4,7 +4,7 @@ import { Switch } from 'react-router';
 import { BrowserRouter, Redirect, Route } from 'react-router-dom';
 import { AnnounceList } from './announce';
 import { Container } from 'semantic-ui-react';
-import { LessonForm } from './lesson';
+import { LessonForm, MyLessonsList } from './lesson';
 
 export class SwitchBox extends React.Component<any, any> {
 
@@ -16,12 +16,21 @@ export class SwitchBox extends React.Component<any, any> {
                     component = { AnnounceList }
                 />
                 <Route
-                    exact = {true} path = '/lesson/:menu'
+                    exact = {true} path = '/lesson/reservation'
                     component = { LessonForm }
                 />
                 <Route
+                    exact = {true} path = '/lesson/my lessons'
+                    component = { MyLessonsList }
+                />
+                <Route
                     exact = {true} path = '/'
-                    render = { () => <h1>Main Menu</h1> }
+                    render = { () =>
+                        <div>        
+                            <h1>Main Menu</h1>
+                            <div id = "firebaseui-auth-container"></div>
+                        </div>              
+                    }
                 />
             </Switch>
         </Container>
