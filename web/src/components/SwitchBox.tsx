@@ -16,6 +16,10 @@ export class SwitchBox extends React.Component<any, any> {
                     component = { AnnounceList }
                 />
                 <Route
+                    exact = {true} path = '/announcements/post'
+                    
+                />
+                <Route
                     exact = {true} path = '/lesson/reservation'
                     component = { LessonForm }
                 />
