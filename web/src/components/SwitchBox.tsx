@@ -2,7 +2,7 @@ import * as React from 'react';
 import { render } from 'react-dom';
 import { Switch } from 'react-router';
 import { BrowserRouter, Redirect, Route } from 'react-router-dom';
-import { AnnounceList } from './announce';
+import { AnnounceList, AnnounceForm, PostForm } from './announce';
 import { Container } from 'semantic-ui-react';
 import { LessonForm, MyLessonsList } from './lesson';
 
@@ -16,8 +16,12 @@ export class SwitchBox extends React.Component<any, any> {
                     component = { AnnounceList }
                 />
                 <Route
+                    exact = {true} path = '/announcements/page/:title'
+                    component = { AnnounceForm }
+                />
+                <Route
                     exact = {true} path = '/announcements/post'
-                    
+                    component = { PostForm }
                 />
                 <Route
                     exact = {true} path = '/lesson/reservation'

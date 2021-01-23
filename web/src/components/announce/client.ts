@@ -7,21 +7,35 @@ const instance: AxiosInstance = Axios.create({
 })
 
 interface Announcement {
-    name: string;
-    date: Date;
+    id?: string;
+    title?: string;
+    date?: Date;
     writer?: {
         id?: string
         name?: String
     };
-    body: string;
+    body?: string;
 }
 
 const fetchAnnounceList = (params = {}, cancelToken: CancelToken = null) :
-Promise<AxiosResponse<{ AnnounceList: Announcement[] }>> => {
+Promise<AxiosResponse<{ announcements: Announcement[] }>> => {
     return instance.get(`/announcements`, {
         params,
         cancelToken
     });
 };
+const postAnnouncement = (payload: Announcement, cancelToken: CancelToken = null) : 
+Promise<AxiosResponse<Announcement>> => {
+    return instance.post(`./announcements`, payload, {
+        cancelToken
+    });
+};
+const fetchContent = (key: string, params = {}, cancelToken: CancelToken = null) :
+Promise<AxiosResponse<{ content: Announcement }>> => {
+    return instance.get(`/announcements/:key`, {
+        params,
+        cancelToken
+    });
+}
 
-export { Announcement, fetchAnnounceList }
+export { Announcement, fetchAnnounceList, postAnnouncement, fetchContent }
