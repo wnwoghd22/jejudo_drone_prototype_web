@@ -30,12 +30,12 @@ Promise<AxiosResponse<Announcement>> => {
         cancelToken
     });
 };
-const fetchContent = (key: string, params = {}, cancelToken: CancelToken = null) :
+const fetchAnnounceContent = (key: string, params = {}, cancelToken: CancelToken = null) :
 Promise<AxiosResponse<{ content: Announcement }>> => {
-    return instance.get(`/announcements/:key`, {
+    return instance.get(`/announcements/${key}`, {
         params,
         cancelToken
     });
 }
 
-export { Announcement, fetchAnnounceList, postAnnouncement, fetchContent }
+export { Announcement, fetchAnnounceList, postAnnouncement, fetchAnnounceContent }

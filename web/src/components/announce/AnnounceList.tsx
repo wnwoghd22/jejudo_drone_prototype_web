@@ -24,7 +24,7 @@ export class AnnounceList extends React.Component<AnnounceProps, AnnounceStats> 
             <List.Item
                 key = {Announcement.id}
                 as = {NavLink}
-                to = {`/announcements/page/${Announcement.title}`}
+                to = {`/announcements/page/${Announcement.id}`}
             >
                 {Announcement.title}
                 {Announcement.date}

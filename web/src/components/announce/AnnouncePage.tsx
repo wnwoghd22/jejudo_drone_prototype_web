@@ -1,11 +1,15 @@
 import * as React from 'react';
+import { match } from 'react-router-dom';
 import { Segment, Comment } from 'semantic-ui-react';
-import { Announcement, fetchContent } from './client';
+import { Announcement } from './client';
 import { AnnounceForm } from './AnnounceForm';
 import { AnnounceList } from './AnnounceList';
 
-interface formProps {
+interface keyMatch {
     key: string;
+}
+interface formProps {
+    match: match<keyMatch>;
 }
 interface formState {
     content: Announcement;
@@ -19,25 +23,13 @@ export class AnnouncePage extends React.Component<formProps, formState> {
     }
 
     public render() {
+        const { key } = this.props.match.params;
+        console.log({key});
         return(
             <div>
                 <h1>공지사항</h1>
-                <AnnounceForm content = {this.state.content} />
+                <AnnounceForm key = {key} />
             </div>
         )
-    }
-    public componentDidMount() {
-        this.fetchContent();
-    }
-
-    private fetchContent = () => {
-        fetchContent(this.props.key)
-            .then(response => {
-                this.setState({ content: null });
-            })
-            .catch(err => {
-                console.log("fetch failed!");
-                console.log(err);
-            });
     }
 }
