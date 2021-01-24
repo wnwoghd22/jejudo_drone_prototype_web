@@ -24,11 +24,11 @@ export class AnnouncePage extends React.Component<formProps, formState> {
 
     public render() {
         const { key } = this.props.match.params;
-        console.log({key});
+        console.log("key: ",key);
         return(
             <div>
                 <h1>공지사항</h1>
-                <AnnounceForm key = {key} />
+                <AnnounceForm keyVal = {key} />
             </div>
         )
     }

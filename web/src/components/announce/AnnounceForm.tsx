@@ -3,7 +3,7 @@ import { Segment, Comment, Header } from 'semantic-ui-react';
 import { Announcement, fetchAnnounceContent } from './client';
 
 interface formProps {
-    key: string;
+    keyVal: string;
 }
 interface formState {
     content: Announcement
@@ -27,13 +27,14 @@ export class AnnounceForm extends React.Component<formProps, formState> {
     }
 
     public render() {
+        const dateVal = this.state.content.date.toString();
         return(
             <Comment.Group>
                 <Header as = 'h2' dividing>{this.state.content.title}</Header>
                 <Comment>
                     <Comment.Content>
                         <Comment.Author>{this.state.content.writer.name}</Comment.Author>
-                        <Comment.Metadata>{this.state.content.date.toString}</Comment.Metadata>
+                        <Comment.Metadata>{dateVal}</Comment.Metadata>
                         <Comment.Text>
                             {this.state.content.body}
                         </Comment.Text>
@@ -44,7 +45,8 @@ export class AnnounceForm extends React.Component<formProps, formState> {
     }
 
     public componentDidMount() {
-        this.fetchContent(this.props.key);
+        console.log(this.props.keyVal);
+        this.fetchContent(this.props.keyVal);
     }
 
     private fetchContent = (key: string) => {
