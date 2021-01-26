@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { render } from 'react-dom';
 import { Switch } from 'react-router';
-import { BrowserRouter, Redirect, Route } from 'react-router-dom';
+import * as Firebaseui from 'firebaseui'
+import { BrowserRouter, Redirect, Route, Link } from 'react-router-dom';
 import { AnnounceList, AnnouncePage, PostForm } from './announce';
-import { Container } from 'semantic-ui-react';
+import { Button, Container } from 'semantic-ui-react';
 import { LessonForm, MyLessonsList } from './lesson';
+import { LogIn } from './login'
 
 export class SwitchBox extends React.Component<any, any> {
 
@@ -32,11 +34,23 @@ export class SwitchBox extends React.Component<any, any> {
                     component = { MyLessonsList }
                 />
                 <Route
+                    exact = {true} path = '/login'
+                    component = { LogIn }
+                />
+                <Route
                     exact = {true} path = '/'
                     render = { () =>
                         <div>        
                             <h1>Main Menu</h1>
-                            <div id = "firebaseui-auth-container"></div>
+                            <div id = "firebaseui-auth-container">
+                                <Button
+                                    key = 'login'
+                                    as = {Link}
+                                    to = '/login'
+                                >
+                                    log in
+                                </Button>
+                            </div>
                         </div>              
                     }
                 />
