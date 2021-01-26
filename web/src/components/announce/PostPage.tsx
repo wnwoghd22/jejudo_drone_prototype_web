@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Segment, Button, Form, TextArea } from 'semantic-ui-react';
 import  TextareaAutosize  from 'react-textarea-autosize';
-import {  Announcement, postAnnouncement } from './client'
+import { Announcement, postAnnouncement } from './client';
+import { auth } from '../login';
 
 interface PostProps {
 
@@ -58,9 +59,9 @@ export class PostForm extends React.Component<PostProps, PostState> {
         const payload = {
             title: this.state.title,
             writer: {
-                name: "writer",
-                id: "00000",
-            }, //temporary  
+                name: auth.currentUser.displayName,
+                id: auth.currentUser.uid,
+            },
             body: this.state.body,
         } as Announcement;
         postAnnouncement(payload).then(()=> {

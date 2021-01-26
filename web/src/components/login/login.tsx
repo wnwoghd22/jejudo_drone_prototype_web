@@ -50,6 +50,10 @@ export class LogIn extends React.Component<any, any> {
                         : <button onClick={this.SignInWithGoogle}>Sign in with Google</button>
                     }
                 </header>
+
+                <div>
+                    <input id = 'user_id'></input>
+                </div>
             </div>
         );
     }
