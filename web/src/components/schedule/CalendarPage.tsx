@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Calendar from 'react-calendar';
 import { Container } from 'semantic-ui-react';
+import { NavLink, Route } from 'react-router-dom';
 import { PartPage } from './PartPage';
 
 interface LessonProps {
@@ -28,10 +29,9 @@ export class CalendarPage extends React.Component<LessonProps,LessonStats> {
             onChange = {this.OnDateChange}
             onClickDay = {this.ViewSchedule}
             tileContent = {
-                <div>
-                    <p>오전</p>
-                    <p>오후</p>
-                </div>
+                <NavLink to = { `/schedule/reservation/${this.state.date.toDateString()}` }>
+                    link
+                </NavLink>
             }
         />
     </Container>
@@ -42,6 +42,7 @@ export class CalendarPage extends React.Component<LessonProps,LessonStats> {
     private ViewSchedule = (date:Date) => {
         let toStr = date.toDateString();
         console.log("day clicked!", toStr);
+        //NavLink.call(`/schedule/reservation/${this.state.date.toDateString}`);
     }
     private OnDateChange = date => {
         this.setState({
