@@ -8,7 +8,7 @@ export class LogIn extends React.Component<any, any> {
         super(props);
 
         this.state = {
-            user: null
+            user: auth.currentUser
         }
 
         this.SignInWithGoogle = this.SignInWithGoogle.bind(this);
