@@ -1,13 +1,23 @@
 import * as React from 'react'
 import { auth, provider, session } from './firebaseConfig'
+import { Account, fetchAccount } from './client'
 
-export class LogIn extends React.Component<any, any> {
+interface loginProps {
+
+}
+interface loginState {
+    user;
+    account: Account;
+}
+
+export class LogIn extends React.Component<loginProps, loginState> {
 
     constructor(props: any) {
         super(props);
 
         this.state = {
-            user: auth.currentUser
+            user: auth.currentUser,
+            account: null,
         }
 
         this.SignInWithGoogle = this.SignInWithGoogle.bind(this);
@@ -20,7 +30,14 @@ export class LogIn extends React.Component<any, any> {
                 this.setState({user: auth.currentUser});
                 console.log("login: ", this.state.user);
             }).then(() => {
-                
+                this.fetchAccount(this.state.user.uid);
+                if(!this.state.account){
+                    //
+                    console.log("no account!");
+                }
+                else {
+                    return;
+                }
             })
             console.log("auth: ", auth.currentUser);
             console.log(this.state.user);
@@ -63,6 +80,15 @@ export class LogIn extends React.Component<any, any> {
                 }
             </div>
         );
+    }
+    private fetchAccount(keyVal: string) {
+        fetchAccount(keyVal).then(response => {
+            this.setState({
+                account: response.data.account
+            });
+        }).catch(err => {
+                console.log('account fetch failed');
+        })
     }
 
     /*private componentDidUpdate() {
