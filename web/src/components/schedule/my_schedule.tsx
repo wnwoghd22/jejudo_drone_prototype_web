@@ -1,14 +1,15 @@
 import * as React from 'react';
 import { List } from 'semantic-ui-react';
+import { auth } from '../login'
 
-interface AnnounceProps {
+interface ScheduleProps {
 
 };
-interface AnnounceStats {
+interface ScheduleStats {
     announceList : []
 };
 
-export class MyLessonsList extends React.Component<AnnounceProps, AnnounceStats> {
+export class MyScheduleList extends React.Component<ScheduleProps, ScheduleStats> {
     public render() {
         return  (
             <div>

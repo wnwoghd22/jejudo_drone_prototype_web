@@ -10,7 +10,7 @@ interface accountState {
 }
 
 
-class AccountPage extends React.Component<accountProps, accountState> {
+export class AccountPage extends React.Component<accountProps, accountState> {
     constructor(props: accountProps) {
         super(props);
 

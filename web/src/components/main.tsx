@@ -31,11 +31,11 @@ export class MainMenu extends React.Component<{}, MainMenuState> {
     public render() {
         const lessonMenu = [
             'reservation',
-            'my lessons'
+            'my schedule'
         ];
         const lessonMenu_kr = new Map([
             ['reservation', '예약' ],
-            ['my lessons', '나의 수업']
+            ['my schedule', '나의 수업']
         ]);
 
         return(
@@ -58,7 +58,7 @@ export class MainMenu extends React.Component<{}, MainMenuState> {
                         </Menu.Item>
                         <Menu.Item>
                             수업
-                            <div id = "lesson">  
+                            <div id = "schedule">  
                                 <Menu.Menu>
                                     <Menu.Menu>
                                         { lessonMenu.map(item =>
@@ -66,7 +66,7 @@ export class MainMenu extends React.Component<{}, MainMenuState> {
                                         key = {item}
                                         as = {NavLink}
                                         to = {
-                                            { pathname: `/lesson/${item}`}
+                                            { pathname: `/schedule/${item}`}
                                         }>
                                             {lessonMenu_kr.get(item)}
                                         </Menu.Item>

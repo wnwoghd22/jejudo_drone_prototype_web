@@ -33,5 +33,11 @@ Promise<AxiosResponse<{ content: Announcement }>> => {
         cancelToken
     });
 }
+const deleteAnnouncement = (key: string, cancelToken: CancelToken = null) :
+Promise<null> => {
+    return instance.delete(`/announcements/${key}`, {
+        cancelToken
+    });
+}
 
-export { Announcement, fetchAnnounceList, postAnnouncement, fetchAnnounceContent }
+export { Announcement, fetchAnnounceList, postAnnouncement, fetchAnnounceContent, deleteAnnouncement }

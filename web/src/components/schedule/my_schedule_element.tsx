@@ -1,17 +1,17 @@
 import * as React from 'react';
 import { Container, Message, Button } from 'semantic-ui-react';
 
-interface lessonElementProps {
+interface ScheduleElementProps {
     userId : string;
     date : Date
 }
 
-interface lessonElementStats {
+interface ScheduleElementStats {
 
 }
 
-export class MyLessonsElement extends React.Component<lessonElementProps,lessonElementStats> {
-    constructor(props: lessonElementProps) {
+export class MyScheduleElement extends React.Component<ScheduleElementProps,ScheduleElementStats> {
+    constructor(props: ScheduleElementProps) {
         super(props);
     }
     public render = () => <div>

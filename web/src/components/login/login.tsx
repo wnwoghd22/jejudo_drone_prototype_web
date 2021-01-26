@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { auth, provider, session } from './firebaseConfig'
 
-
 export class LogIn extends React.Component<any, any> {
 
     constructor(props: any) {
@@ -52,9 +51,16 @@ export class LogIn extends React.Component<any, any> {
                     }
                 </header>
 
-                <div>
-                    <input id = 'user_id'></input>
-                </div>
+                {
+                    this.state.user
+                    ? <></>
+                    :
+                    <div>
+                        <input id = 'user_email'></input>
+                        <input id = 'user_pw'></input>
+                        <button>log in</button>
+                    </div>
+                }
             </div>
         );
     }
