@@ -38,6 +38,9 @@ export class SwitchBox extends React.Component<any, any> {
                     component = { LogIn }
                 />
                 <Route
+                    exact = {true} path = '/login/create account'
+                />
+                <Route
                     exact = {true} path = '/'
                     render = { () =>
                         <div>        

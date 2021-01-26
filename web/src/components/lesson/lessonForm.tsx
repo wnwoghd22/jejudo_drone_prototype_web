@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Calendar from 'react-calendar';
-import { Container, Button, List } from 'semantic-ui-react';
+import { Container } from 'semantic-ui-react';
 import { Schedule } from './Schedule';
 
 interface LessonProps {

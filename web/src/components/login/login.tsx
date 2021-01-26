@@ -15,12 +15,13 @@ export class LogIn extends React.Component<any, any> {
         this.SignOut = this.SignOut.bind(this);
     }
 
-
     SignInWithGoogle = () => {
-        auth.setPersistence(session).then(()=>  {
+        auth.setPersistence(session).then(() => {
             auth.signInWithPopup(provider).then(() => {
                 this.setState({user: auth.currentUser});
                 console.log("login: ", this.state.user);
+            }).then(() => {
+                
             })
             console.log("auth: ", auth.currentUser);
             console.log(this.state.user);
