@@ -6,7 +6,7 @@ import { BrowserRouter, Redirect, Route, Link } from 'react-router-dom';
 import { AnnounceList, AnnouncePage, PostForm } from './announce';
 import { Button, Container } from 'semantic-ui-react';
 import { CalendarPage, PartPage, MyScheduleList } from './schedule';
-import { LogIn } from './login'
+import { LogIn, AccountPage } from './login'
 
 export class SwitchBox extends React.Component<any, any> {
 
@@ -43,6 +43,7 @@ export class SwitchBox extends React.Component<any, any> {
                 />
                 <Route
                     exact = {true} path = '/login/create account'
+                    component = { AccountPage }
                 />
                 <Route
                     exact = {true} path = '/'

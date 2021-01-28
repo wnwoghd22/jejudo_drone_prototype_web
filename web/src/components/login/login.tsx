@@ -1,9 +1,10 @@
 import * as React from 'react'
-import { auth, provider, session } from './firebaseConfig'
-import { Account, fetchAccount } from './client'
+import { Route, withRouter } from 'react-router-dom';
+import { auth, provider, session, local } from './firebaseConfig'
+import { Account, fetchAccount, postAccount } from './client'
 
 interface loginProps {
-
+    
 }
 interface loginState {
     user;
@@ -16,7 +17,7 @@ export class LogIn extends React.Component<loginProps, loginState> {
         super(props);
 
         this.state = {
-            user: auth.currentUser,
+            user: null, //auth.currentUser,
             account: null,
         }
 
@@ -25,18 +26,30 @@ export class LogIn extends React.Component<loginProps, loginState> {
     }
 
     SignInWithGoogle = () => {
-        auth.setPersistence(session).then(() => {
+        auth.setPersistence('local').then(() => {
             auth.signInWithPopup(provider).then(() => {
                 this.setState({user: auth.currentUser});
                 console.log("login: ", this.state.user);
             }).then(() => {
                 this.fetchAccount(this.state.user.uid);
                 if(!this.state.account){
-                    //
-                    console.log("no account!");
+                    //console.log("no account!");
+                    //window.history.pushState('v1','', '/login/create account');
+                    let content = {
+                        id: this.state.user.uid,
+                        name: this.state.user.displayName,
+                        phoneNum: '01000000000',
+                        authority: 'student',
+                        schedule: [],
+                    } as Account;
+                    
+                    postAccount(content).then(() => {
+                        this.fetchAccount(this.state.user.uid); 
+                        console.log("created!");
+                    });
                 }
                 else {
-                    return;
+                    //window.history.pushState('v1','', '/');
                 }
             })
             console.log("auth: ", auth.currentUser);
@@ -52,6 +65,7 @@ export class LogIn extends React.Component<loginProps, loginState> {
 
     render() {
         console.log("current: ", this.state.user);
+        console.log("auth: ", auth.currentUser);
         return (
             <div className="LogIn">
                 <header>
@@ -76,6 +90,7 @@ export class LogIn extends React.Component<loginProps, loginState> {
                         <input id = 'user_email'></input>
                         <input id = 'user_pw'></input>
                         <button>log in</button>
+                        <button>create account</button>
                     </div>
                 }
             </div>
@@ -88,6 +103,7 @@ export class LogIn extends React.Component<loginProps, loginState> {
             });
         }).catch(err => {
                 console.log('account fetch failed');
+
         })
     }
 

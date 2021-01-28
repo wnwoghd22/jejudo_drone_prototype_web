@@ -14,6 +14,7 @@ export class MyScheduleList extends React.Component<ScheduleProps, ScheduleStats
         return  (
             <div>
                 <h1>나의 수업</h1>
+                <h2>{auth.currentUser.displayName}</h2>
                 <List>
                     
                 </List>

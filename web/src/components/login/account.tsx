@@ -6,24 +6,25 @@ interface accountProps {
     
 }
 interface accountState {
-    user;
-}
 
+}
 
 export class AccountPage extends React.Component<accountProps, accountState> {
     constructor(props: accountProps) {
         super(props);
 
         this.state = {
-            user: auth.currentUser
+
         }
     }
 
     public render = () => {
+        console.log(auth.currentUser);
         return(
             <div>
                 <h1>계정 정보 입력</h1>
                 <Container>
+                    <h3>이메일: {auth.currentUser.email}</h3>
 
                 </Container>
                 <Button>취소</Button>
