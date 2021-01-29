@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Container, Button, Comment } from 'semantic-ui-react';
 import { match } from 'react-router-dom';
 import { schedule, student, postScheduletoAccount, postStudentToList } from './client';
-import { auth, fetchAccount } from '../login'
+import { auth } from '../login'
 
 interface keyMatch {
     date: string;
@@ -32,12 +32,12 @@ export class PartPage extends React.Component<ScheculeProps, ScheduleStats> {
                 <h3>{auth.currentUser.displayName}</h3>
                 <Container>
                     <Button onClick = {() => this.Reserve('moring')}>오전</Button>
-                    <Button>점심시간
+                    <Button onClick = {() => this.Reserve('noon')}>점심시간
                         <Comment>
                             수강생이 적은 경우 수업하지 않습니다.
                         </Comment>
                     </Button>
-                    <Button>오후</Button>
+                    <Button onClick = {() => this.Reserve('afternoon')}>오후</Button>
                 </Container>
             </div>
     )};
