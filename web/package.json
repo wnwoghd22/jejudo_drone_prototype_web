@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build_dev": "webpack --mode development && firebase deploy",
     "start": "webpack-dev-server --mode development --content-base ./dist --hot --inline --colors --port 3000 --open",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.21.1",
+    "create-react-app": "^4.0.1",
     "css-loader": "^5.0.1",
     "firebase": "^8.2.1",
     "firebaseui": "^4.7.1",
