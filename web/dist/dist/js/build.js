@@ -88556,12 +88556,42 @@ const my_schedule_element_1 = __webpack_require__(/*! ./my_schedule_element */ "
 ;
 ;
 class MyScheduleList extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = this.getAuth();
+    }
     render() {
         return (React.createElement("div", null,
             React.createElement("h1", null, "\uB098\uC758 \uC218\uC5C5"),
-            React.createElement("h2", null, login_1.auth.currentUser.displayName),
+            React.createElement("h2", null, this.state.user ?
+                login_1.auth.currentUser.displayName
+                : "로그인 하십시오."),
             React.createElement(my_schedule_element_1.MyScheduleElement, null)));
     }
+    componentWillUnmount() {
+    }
+    componentDidMount() {
+        login_1.auth.onAuthStateChanged(user => {
+            if (user) {
+                console.log(login_1.auth.currentUser);
+                this.setState({ user: login_1.auth.currentUser });
+            }
+            else {
+            }
+        });
+    }
+    getAuth() {
+        let result = { user: null };
+        login_1.auth.onAuthStateChanged(user => {
+            if (user) {
+                result.user = login_1.auth.currentUser;
+            }
+            else {
+            }
+        });
+        return result;
+    }
+    ;
 }
 exports.MyScheduleList = MyScheduleList;
 
@@ -88603,11 +88633,15 @@ class MyScheduleElement extends React.Component {
         this.FetchList();
     }
     FetchList() {
-        client_1.fetchSchedulefromAccount(login_1.auth.currentUser.uid).then(response => {
-            this.setState({ schedule: response.data.schedule });
-            console.log(this.state.schedule);
-        }).catch(err => {
-            console.log("schedule fetch error!");
+        login_1.auth.onAuthStateChanged(user => {
+            if (user) {
+                client_1.fetchSchedulefromAccount(login_1.auth.currentUser.uid).then(response => {
+                    this.setState({ schedule: response.data.schedule });
+                    console.log(this.state.schedule);
+                }).catch(err => {
+                    console.log("schedule fetch error!");
+                });
+            }
         });
     }
     CancelLesson() {

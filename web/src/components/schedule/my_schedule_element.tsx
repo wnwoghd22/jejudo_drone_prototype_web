@@ -40,11 +40,15 @@ export class MyScheduleElement extends React.Component<ScheduleElementProps,Sche
     }
 
     private FetchList() {
-        fetchSchedulefromAccount(auth.currentUser.uid).then(response => {
-            this.setState({ schedule: response.data.schedule });
-            console.log(this.state.schedule);
-        }).catch(err => {
-            console.log("schedule fetch error!");
+        auth.onAuthStateChanged(user => {
+            if(user) {     
+                fetchSchedulefromAccount(auth.currentUser.uid).then(response => {
+                    this.setState({ schedule: response.data.schedule });
+                    console.log(this.state.schedule);
+                }).catch(err => {
+                    console.log("schedule fetch error!");
+                })
+            }
         })
     }
     private CancelLesson() {

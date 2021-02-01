@@ -107,7 +107,4 @@ export class LogIn extends React.Component<loginProps, loginState> {
         })
     }
 
-    /*private componentDidUpdate() {
-        this.render();
-    }*/
 }
