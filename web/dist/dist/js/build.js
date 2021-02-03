@@ -88547,7 +88547,6 @@ class PartPage extends React.Component {
         const { date } = this.props.match.params;
         let _id = login_1.auth.currentUser.uid;
         let content = {
-            id: login_1.auth.currentUser.uid,
             date: date,
             part: part,
         };
@@ -88556,7 +88555,11 @@ class PartPage extends React.Component {
                 alert("이미 신청되어 있습니다.");
             }
             else {
-                client_1.postStudentToList(date, part, content);
+                let student = {
+                    key: _id,
+                    name: login_1.auth.currentUser.displayName,
+                };
+                client_1.postStudentToList(date, part, student);
                 alert("신청되었습니다.");
             }
         });
@@ -88577,13 +88580,8 @@ exports.PartPage = PartPage;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchSchedulefromAccount = exports.fetchScheduleList = exports.postStudentToList = exports.postScheduletoAccount = void 0;
+exports.deleteStudentOfSchedule = exports.cancelScheduleOfAccount = exports.fetchSchedulefromAccount = exports.fetchStudentsList = exports.fetchScheduleList = exports.postStudentToList = exports.postScheduletoAccount = void 0;
 const clientConfig_1 = __webpack_require__(/*! ../clientConfig */ "./components/clientConfig.ts");
-const postSchedule = (payload, cancelToken = null) => {
-    return clientConfig_1.instance.post(`/schedule`, payload, {
-        cancelToken
-    });
-};
 const postStudentToList = (date, part, payload, cancelToken = null) => {
     return clientConfig_1.instance.post(`/schedule/${date}/${part}`, payload, {
         cancelToken
@@ -88610,6 +88608,7 @@ const fetchStudentsList = (date, part, params = {}, cancelToken = null) => {
         cancelToken
     });
 };
+exports.fetchStudentsList = fetchStudentsList;
 const fetchSchedulefromAccount = (key, params = {}, cancelToken = null) => {
     return clientConfig_1.instance.get(`/accounts/${key}/schedule`, {
         params,
@@ -88617,6 +88616,18 @@ const fetchSchedulefromAccount = (key, params = {}, cancelToken = null) => {
     });
 };
 exports.fetchSchedulefromAccount = fetchSchedulefromAccount;
+const cancelScheduleOfAccount = (key, id, cancelToken = null) => {
+    return clientConfig_1.instance.delete(`/accounts/${key}/schedule/${id}`, {
+        cancelToken
+    });
+};
+exports.cancelScheduleOfAccount = cancelScheduleOfAccount;
+const deleteStudentOfSchedule = (date, part, key, cancelToken = null) => {
+    return clientConfig_1.instance.delete(`schedule/${date}/${part}/${key}`, {
+        cancelToken
+    });
+};
+exports.deleteStudentOfSchedule = deleteStudentOfSchedule;
 
 
 /***/ }),
@@ -88727,10 +88738,10 @@ class MyScheduleElement extends React.Component {
     constructor(props) {
         super(props);
         this.render = () => {
-            const listItems = this.state.schedule.map(schedule => React.createElement(semantic_ui_react_1.List.Item, null,
+            const listItems = this.state.schedule.map(schedule => React.createElement(semantic_ui_react_1.List.Item, { key: schedule.id },
                 schedule.date,
                 schedule.part,
-                React.createElement(semantic_ui_react_1.Button, { onClick: this.CancelLesson }, "\uCDE8\uC18C")));
+                React.createElement(semantic_ui_react_1.Button, { onClick: () => this.CancelLesson(schedule.id, schedule.date, schedule.part) }, "\uCDE8\uC18C")));
             return (React.createElement("div", null,
                 React.createElement(semantic_ui_react_1.List, { items: listItems })));
         };
@@ -88745,7 +88756,7 @@ class MyScheduleElement extends React.Component {
     FetchList() {
         login_1.auth.onAuthStateChanged(user => {
             if (user) {
-                client_1.fetchSchedulefromAccount(login_1.auth.currentUser.uid).then(response => {
+                client_1.fetchSchedulefromAccount(user.uid).then(response => {
                     this.setState({ schedule: response.data.schedule });
                     console.log(this.state.schedule);
                 }).catch(err => {
@@ -88754,7 +88765,14 @@ class MyScheduleElement extends React.Component {
             }
         });
     }
-    CancelLesson() {
+    CancelLesson(id, date, part) {
+        login_1.auth.onAuthStateChanged(user => {
+            if (user) {
+                console.log("cancel schedule");
+                client_1.cancelScheduleOfAccount(user.uid, id);
+                client_1.deleteStudentOfSchedule(date, part, user.uid);
+            }
+        });
     }
 }
 exports.MyScheduleElement = MyScheduleElement;

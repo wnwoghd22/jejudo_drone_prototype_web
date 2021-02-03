@@ -47,7 +47,6 @@ export class PartPage extends React.Component<ScheculeProps, ScheduleStats> {
         let _id = auth.currentUser.uid;
         
         let content = {
-            id: auth.currentUser.uid,
             date: date,
             part: part,
         } as schedule;
@@ -55,7 +54,11 @@ export class PartPage extends React.Component<ScheculeProps, ScheduleStats> {
             if(result.data.result === "already exist") {
                 alert("이미 신청되어 있습니다.");
             } else {
-                postStudentToList(date, part, content);
+                let student = {
+                    key: _id,
+                    name: auth.currentUser.displayName,
+                } as student;
+                postStudentToList(date, part, student);
                 alert("신청되었습니다.");
             }
         })
