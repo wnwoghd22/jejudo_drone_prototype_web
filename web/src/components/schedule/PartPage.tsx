@@ -51,8 +51,13 @@ export class PartPage extends React.Component<ScheculeProps, ScheduleStats> {
             date: date,
             part: part,
         } as schedule;
-        postScheduletoAccount(_id, content);
-        postStudentToList(date, part, content);
-        alert("신청되었습니다.");
+        postScheduletoAccount(_id, content).then(result => {
+            if(result.data.result === "already exist") {
+                alert("이미 신청되어 있습니다.");
+            } else {
+                postStudentToList(date, part, content);
+                alert("신청되었습니다.");
+            }
+        })
     }
 }

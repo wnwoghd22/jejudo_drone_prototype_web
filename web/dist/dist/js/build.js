@@ -87807,6 +87807,46 @@ const React = __webpack_require__(/*! react */ "../node_modules/react/index.js")
 const react_router_dom_1 = __webpack_require__(/*! react-router-dom */ "../node_modules/react-router-dom/esm/react-router-dom.js");
 const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "../node_modules/semantic-ui-react/dist/es/index.js");
 const client_1 = __webpack_require__(/*! ./client */ "./components/announce/client.ts");
+function clamp(x, min, max) {
+    return Math.max(Math.min(x, max), min);
+}
+function cap_str_length(str, len) {
+    if (str.length > len) {
+        return str.substr(0, len - 3) + "...";
+    }
+    else {
+        return str;
+    }
+}
+function make_clamped_sublist_of_indices(center_index, domain_list_size, sub_list_size) {
+    const result = [];
+    if (sub_list_size > domain_list_size) {
+        for (let i = 0; i < domain_list_size; ++i) {
+            result.push(i);
+        }
+        return result;
+    }
+    else {
+        let left_index = clamp(center_index, 0, domain_list_size - 1);
+        let right_index = left_index + 1;
+        while (true) {
+            if (result.length >= sub_list_size) {
+                return result;
+            }
+            if (left_index >= 0) {
+                result.unshift(left_index);
+                --left_index;
+            }
+            if (result.length >= sub_list_size) {
+                return result;
+            }
+            if (right_index < domain_list_size) {
+                result.push(right_index);
+                ++right_index;
+            }
+        }
+    }
+}
 ;
 ;
 class AnnounceList extends React.Component {
@@ -87823,27 +87863,90 @@ class AnnounceList extends React.Component {
             });
         };
         this.state = {
-            announceList: []
+            announceList: [],
+            listPageSize: 6,
+            listCurrentPage: 0,
+            paginatorShowCount: 3,
         };
     }
     render() {
-        console.log(this.state.announceList);
-        const listItems = this.state.announceList.map(Announcement => React.createElement(semantic_ui_react_1.List.Item, { key: Announcement.id, as: react_router_dom_1.NavLink, to: `/announcements/page/${Announcement.id}` },
-            Announcement.title,
-            Announcement.date,
-            Announcement.writer.name));
+        const tableRows = this.buildElement_rowList();
+        const paginatorBtnList = this.buildElement_paginator();
         return (React.createElement("div", null,
             React.createElement("h1", null, "\uACF5\uC9C0 \uC0AC\uD56D"),
-            React.createElement(semantic_ui_react_1.List, { items: listItems }),
-            React.createElement("input", { id: "search" }),
-            React.createElement("button", { id: "searchBtn" }, "\uAC80\uC0C9"),
-            React.createElement(semantic_ui_react_1.Button, { key: "post", as: react_router_dom_1.Link, to: '/announcements/post' }, "\uAE00\uC4F0\uAE30")));
+            React.createElement(semantic_ui_react_1.Table, { striped: true },
+                React.createElement(semantic_ui_react_1.Table.Header, null,
+                    React.createElement(semantic_ui_react_1.Table.Row, null,
+                        React.createElement(semantic_ui_react_1.Table.HeaderCell, { colSpan: '3' },
+                            React.createElement(semantic_ui_react_1.Menu, { floated: 'right', pagination: true },
+                                React.createElement(semantic_ui_react_1.Menu.Item, { icon: true, as: 'a', name: `page_btn_left`, onClick: () => this.setCurrentListPage(this.state.listCurrentPage - 1) },
+                                    React.createElement(semantic_ui_react_1.Icon, { name: 'chevron left' })),
+                                paginatorBtnList,
+                                React.createElement(semantic_ui_react_1.Menu.Item, { icon: true, as: 'a', name: `page_btn_left`, onClick: () => this.setCurrentListPage(this.state.listCurrentPage + 1) },
+                                    React.createElement(semantic_ui_react_1.Icon, { name: 'chevron right' })))))),
+                React.createElement(semantic_ui_react_1.Table.Header, null,
+                    React.createElement(semantic_ui_react_1.Table.Row, null,
+                        React.createElement(semantic_ui_react_1.Table.HeaderCell, null, "\uC81C\uBAA9"),
+                        React.createElement(semantic_ui_react_1.Table.HeaderCell, null, "\uAE00\uC4F4\uC774"),
+                        React.createElement(semantic_ui_react_1.Table.HeaderCell, null, "\uB0A0\uC9DC"))),
+                React.createElement(semantic_ui_react_1.Table.Body, null, tableRows)),
+            React.createElement(semantic_ui_react_1.Grid, null,
+                React.createElement(semantic_ui_react_1.Grid.Row, null,
+                    React.createElement(semantic_ui_react_1.Grid.Column, { width: 12 },
+                        React.createElement(semantic_ui_react_1.Form, null,
+                            React.createElement(semantic_ui_react_1.Form.Group, { widths: 'equal' },
+                                React.createElement(semantic_ui_react_1.Form.Field, null,
+                                    React.createElement("input", { placeholder: "\uAC80\uC0C9\uC5B4" })),
+                                React.createElement(semantic_ui_react_1.Form.Button, { content: "\uAC80\uC0C9", attached: "right" })))),
+                    React.createElement(semantic_ui_react_1.Grid.Column, { width: 4, textAlign: "right" },
+                        React.createElement(semantic_ui_react_1.Button, { key: "post", as: react_router_dom_1.Link, to: '/announcements/post' }, "\uAE00\uC4F0\uAE30"))))));
     }
     componentDidMount() {
         this.fetchList();
         this.state.announceList.forEach(element => {
             console.log("writer: ", element.writer);
         });
+    }
+    calcTotalPagesCount() {
+        return Math.ceil(this.state.announceList.length / this.state.listPageSize);
+    }
+    setCurrentListPage(pageIndex) {
+        const totalPagesCount = this.calcTotalPagesCount();
+        if (pageIndex >= totalPagesCount) {
+            pageIndex = totalPagesCount - 1;
+        }
+        else if (pageIndex < 0) {
+            pageIndex = 0;
+        }
+        this.setState({
+            listCurrentPage: pageIndex,
+        });
+    }
+    buildElement_rowList() {
+        const tableRows = [];
+        const begin_index = this.state.listPageSize * this.state.listCurrentPage;
+        const end_index = this.state.listPageSize * (this.state.listCurrentPage + 1);
+        for (let i = begin_index; i < end_index; ++i) {
+            const one_element = this.state.announceList[this.state.announceList.length - i - 1];
+            if (undefined === one_element) {
+                continue;
+            }
+            tableRows.push(React.createElement(semantic_ui_react_1.Table.Row, { key: `announce_row_${one_element.id}` },
+                React.createElement(semantic_ui_react_1.Table.Cell, { width: 7 },
+                    React.createElement(semantic_ui_react_1.Label, { key: one_element.id, as: react_router_dom_1.NavLink, to: `/announcements/page/${one_element.id}` }, cap_str_length(one_element.title, 128))),
+                React.createElement(semantic_ui_react_1.Table.Cell, { width: 2 }, one_element.writer.name),
+                React.createElement(semantic_ui_react_1.Table.Cell, { width: 2 }, one_element.date)));
+        }
+        return tableRows;
+    }
+    buildElement_paginator() {
+        const paginatorBtnList = [];
+        const totalPagesCount = this.calcTotalPagesCount();
+        const displayIndices = make_clamped_sublist_of_indices(this.state.listCurrentPage, totalPagesCount, this.state.paginatorShowCount);
+        for (let i of displayIndices) {
+            paginatorBtnList.push(React.createElement(semantic_ui_react_1.Menu.Item, { as: 'a', key: `paginator_btn_${i}`, name: `page_btn_${i}`, active: this.state.listCurrentPage === i, onClick: () => this.setCurrentListPage(i) }, i + 1));
+        }
+        return paginatorBtnList;
     }
 }
 exports.AnnounceList = AnnounceList;
@@ -88448,9 +88551,15 @@ class PartPage extends React.Component {
             date: date,
             part: part,
         };
-        client_1.postScheduletoAccount(_id, content);
-        client_1.postStudentToList(date, part, content);
-        alert("신청되었습니다.");
+        client_1.postScheduletoAccount(_id, content).then(result => {
+            if (result.data.result === "already exist") {
+                alert("이미 신청되어 있습니다.");
+            }
+            else {
+                client_1.postStudentToList(date, part, content);
+                alert("신청되었습니다.");
+            }
+        });
     }
 }
 exports.PartPage = PartPage;
@@ -88481,8 +88590,9 @@ const postStudentToList = (date, part, payload, cancelToken = null) => {
     });
 };
 exports.postStudentToList = postStudentToList;
-const postScheduletoAccount = (key, payload, cancelToken = null) => {
+const postScheduletoAccount = (key, payload, params = {}, cancelToken = null) => {
     return clientConfig_1.instance.post(`/accounts/${key}/schedule`, payload, {
+        params,
         cancelToken
     });
 };

@@ -24,9 +24,10 @@ Promise<AxiosResponse<schedule>> => {
         cancelToken
     });
 };
-const postScheduletoAccount = (key: string, payload: schedule, cancelToken: CancelToken = null) :
-Promise<AxiosResponse<{ schedule: schedule }>> => {
+const postScheduletoAccount = (key: string, payload: schedule, params = {}, cancelToken: CancelToken = null) :
+Promise<AxiosResponse<{ result: string }>> => {
     return instance.post(`/accounts/${key}/schedule`, payload, {
+        params,
         cancelToken
     });
 }
