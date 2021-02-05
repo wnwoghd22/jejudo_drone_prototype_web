@@ -27,17 +27,28 @@ export class LogIn extends React.Component<loginProps, loginState> {
         this.fetchAccount = this.fetchAccount.bind(this);
     }
 
-    SignInWithGoogle = () => {
-        auth.setPersistence('local').then(() => {
-            auth.signInWithPopup(provider).then(result => {
-                this.setState({user: result.user});
-                console.log("login: ", this.state.user.uid);
-                this.fetchAccount(this.state.user.uid);
-            }).catch(err => {
-               console.log(err);
+    SignInWithGoogle = () => <Route render = {({ history }) => (
+        <Button onClick={ () => {
+            auth.setPersistence('session').then(() => {
+                auth.signInWithPopup(provider).then(result => {
+                    this.setState({user: result.user});
+                    fetchAccount(result.user.uid).then(response => {
+                        if(response.data.account) {
+                            this.setState({ account: response.data.account });
+                            history.push('/');
+                        } else {
+                            alert('회원 정보가 없습니다.\n정보를 입력해 주세요.');
+                            history.push('/login/create account');
+                        }
+                    })
+                }).catch(err => {
+                   console.log(err);
+                });
             });
-        });
-    }
+        }}>
+                Sign in with Google
+        </Button> )}
+    />
     SignOut = () => {
         auth.signOut().then(() => {
             this.setState({user: auth.currentUser});
@@ -58,28 +69,7 @@ export class LogIn extends React.Component<loginProps, loginState> {
                     {
                         this.state.user
                         ? <button onClick={this.SignOut}>Sign out</button>
-                        : <Route render = {({ history }) => (
-                            <Button onClick={ () => {
-                                auth.setPersistence('session').then(() => {
-                                    auth.signInWithPopup(provider).then(result => {
-                                        this.setState({user: result.user});
-                                        fetchAccount(result.user.uid).then(response => {
-                                            if(response.data.account) {
-                                                this.setState({ account: response.data.account });
-                                                history.push('/');
-                                            } else {
-                                                alert('회원 정보가 없습니다.\n정보를 입력해 주세요.');
-                                                history.push('/login/create account');
-                                            }
-                                        })
-                                    }).catch(err => {
-                                       console.log(err);
-                                    });
-                                });
-                            }}>
-                                    Sign in with Google
-                            </Button> )}
-                        />
+                        : <this.SignInWithGoogle/>
                     }
                 </header>
 
