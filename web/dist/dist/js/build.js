@@ -88208,26 +88208,26 @@ class AccountPage extends React.Component {
                                 this.state.user ? firebaseConfig_1.auth.currentUser.email : null)) :
                         React.createElement("div", null,
                             React.createElement("span", null, "\uC774\uBA54\uC77C"),
-                            React.createElement("input", { id: 'email' }),
+                            React.createElement("input", { id: "email" }),
                             " ",
                             React.createElement("br", null),
                             React.createElement("span", null, "\uBE44\uBC00\uBC88\uD638"),
-                            React.createElement("input", { id: 'password' })),
+                            React.createElement("input", { id: "password" })),
                     React.createElement("div", null,
                         React.createElement("span", null, "\uC774\uB984"),
                         React.createElement("input", { id: "name_input" }),
                         " ",
                         React.createElement("br", null),
                         React.createElement("span", null, "\uC804\uD654\uBC88\uD638"),
-                        React.createElement("input", { id: 'phone' }),
+                        React.createElement("input", { id: "phone" }),
                         " ",
                         React.createElement("br", null),
                         React.createElement("span", null, "\uACFC\uC815"),
-                        React.createElement("select", { id: 'curriculum' },
-                            React.createElement("option", { value: 'default' }, "--\uACFC\uC815\uC744 \uC120\uD0DD\uD558\uC138\uC694--"),
-                            React.createElement("option", { value: '' }, "\uC911\uD615"),
-                            React.createElement("option", { value: '' }, "\uC18C\uD615")))),
-                React.createElement(semantic_ui_react_1.Button, null, "\uCDE8\uC18C"),
+                        React.createElement("select", { id: "curriculum" },
+                            React.createElement("option", { value: "default" }, "--\uACFC\uC815\uC744 \uC120\uD0DD\uD558\uC138\uC694--"),
+                            React.createElement("option", { value: "" }, "\uC911\uD615"),
+                            React.createElement("option", { value: "" }, "\uC18C\uD615")))),
+                React.createElement(this.cancelButton, null),
                 React.createElement(this.CreateAccount, null)));
         };
         this.CreateAccount = () => React.createElement(react_router_dom_1.Route, { render: ({ history }) => React.createElement(semantic_ui_react_1.Button, { onClick: () => {
@@ -88253,13 +88253,37 @@ class AccountPage extends React.Component {
                         else {
                             let _email = document.querySelector('#email').value;
                             let _password = document.querySelector('#password').value;
+                            firebaseConfig_1.auth.createUserWithEmailAndPassword(_email, _password).then(result => {
+                                this.setState({
+                                    account: {
+                                        id: result.user.uid,
+                                        name: _name,
+                                        phoneNum: _phoneNum,
+                                        curriculum: _curriculum,
+                                    }
+                                });
+                                client_1.postAccount(this.state.account).then(() => {
+                                    alert('계정이 생성되었습니다.');
+                                    history.push('/');
+                                });
+                            });
                         }
                     });
-                    let accountData = {
-                        id: firebaseConfig_1.auth.currentUser.uid,
-                        name: "default"
-                    };
                 } }, "\uD655\uC778") });
+        this.cancelButton = () => React.createElement(react_router_dom_1.Route, { render: ({ history }) => React.createElement(semantic_ui_react_1.Button, { onClick: () => {
+                    firebaseConfig_1.auth.onAuthStateChanged(user => {
+                        if (user) {
+                            user.delete().then(() => {
+                                history.push('/');
+                            }).catch(err => {
+                                console.log('delete failed');
+                            });
+                        }
+                        else {
+                            history.push('/');
+                        }
+                    });
+                } }, "\uCDE8\uC18C") });
         this.state = {
             user: null,
             email: '',
@@ -88272,6 +88296,7 @@ class AccountPage extends React.Component {
             }
         };
         this.CreateAccount = this.CreateAccount.bind(this);
+        this.cancelButton = this.cancelButton.bind(this);
     }
     componentDidMount() {
         firebaseConfig_1.auth.onAuthStateChanged(user => {
