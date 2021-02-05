@@ -8,8 +8,21 @@ import { Button, Container } from 'semantic-ui-react';
 import { CalendarPage, PartPage, MyScheduleList } from './schedule';
 import { auth, LogIn, AccountPage } from './login'
 
-export class SwitchBox extends React.Component<any, any> {
-    
+interface boxprops {
+
+}
+interface boxstate {
+    user?,
+}
+
+export class SwitchBox extends React.Component<boxprops, boxstate> {
+    constructor(props: boxprops) {
+        super(props);
+
+        this.state = {
+            user: null,
+        }
+    }
     public render = () => (
         <Container>
             <Switch>
@@ -58,7 +71,11 @@ export class SwitchBox extends React.Component<any, any> {
                                     key = 'login'
                                     as = {Link}
                                     to = '/login'
-                                >log in
+                                >{
+                                    this.state.user ?
+                                    '회원 정보' :
+                                    'log in'
+                                }
                                 </Button>
                             </div>
                         </div>              
@@ -67,4 +84,13 @@ export class SwitchBox extends React.Component<any, any> {
             </Switch>
         </Container>
     );
+    componentDidMount() {
+        auth.onAuthStateChanged(user => {
+            if(user) {
+                this.setState({user: user});
+            } else {
+                this.setState({user: null});
+            }
+        })
+    }
 };
