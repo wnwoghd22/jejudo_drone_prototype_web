@@ -28,11 +28,6 @@ export class CalendarPage extends React.Component<LessonProps,LessonStats> {
             value = {this.state.date}
             onChange = {this.OnDateChange}
             onClickDay = {this.ViewSchedule}
-            tileContent = {
-                <NavLink to = { `/schedule/reservation/${this.state.date.toDateString()}` }>
-                    link
-                </NavLink>
-            }
         />
     </Container>
 
@@ -44,10 +39,11 @@ export class CalendarPage extends React.Component<LessonProps,LessonStats> {
         console.log("day clicked!", toStr);
         //NavLink.call(`/schedule/reservation/${this.state.date.toDateString}`);
     }
-    private OnDateChange = date => {
+    private OnDateChange = value => {
         this.setState({
-            date: date
+            date: value
         })
         this.CheckTime();
+        history.pushState('v1', '', `/schedule/reservation/${value.toDateString()}`);
     }
 }

@@ -27,45 +27,23 @@ export class LogIn extends React.Component<loginProps, loginState> {
 
     SignInWithGoogle = () => {
         auth.setPersistence('local').then(() => {
-            auth.signInWithPopup(provider).then(() => {
-                this.setState({user: auth.currentUser});
-                console.log("login: ", this.state.user);
-            }).then(() => {
+            auth.signInWithPopup(provider).then(result => {
+                this.setState({user: result.user});
+                console.log("login: ", this.state.user.uid);
                 this.fetchAccount(this.state.user.uid);
-                if(!this.state.account){
-                    //console.log("no account!");
-                    //window.history.pushState('v1','', '/login/create account');
-                    let content = {
-                        id: this.state.user.uid,
-                        name: this.state.user.displayName,
-                        phoneNum: '01000000000',
-                        authority: 'student',
-                        schedule: [],
-                    } as Account;
-                    
-                    postAccount(content).then(() => {
-                        this.fetchAccount(this.state.user.uid); 
-                        console.log("created!");
-                    });
-                }
-                else {
-                    //window.history.pushState('v1','', '/');
-                }
-            })
-            console.log("auth: ", auth.currentUser);
-            console.log(this.state.user);
-        })
+            }).catch(err => {
+               console.log(err);
+            });
+        });
     }
     SignOut = () => {
         auth.signOut().then(() => {
             this.setState({user: auth.currentUser});
-        })
+        });
         console.log(this.state.user);
     }
 
     render() {
-        console.log("current: ", this.state.user);
-        console.log("auth: ", auth.currentUser);
         return (
             <div className="LogIn">
                 <header>
@@ -96,15 +74,31 @@ export class LogIn extends React.Component<loginProps, loginState> {
             </div>
         );
     }
-    private fetchAccount(keyVal: string) {
-        fetchAccount(keyVal).then(response => {
-            this.setState({
-                account: response.data.account
-            });
-        }).catch(err => {
-                console.log('account fetch failed');
-
-        })
+    componentDidMount() {
+        auth.onAuthStateChanged(user => {
+            if(user) {
+                this.setState({user: user});
+                this.render();
+            }
+        }) 
     }
 
+    private fetchAccount(keyVal: string) {
+        fetchAccount(keyVal).then(response => {
+            console.log(response.data.account);
+            if(response.data.account) {
+                console.log('login!');
+                this.setState({
+                    account: response.data.account
+                });
+                window.history.pushState('v1','', '/');
+            }
+            else {
+                console.log("no account!");
+                window.history.pushState('v1','', '/login/create account');
+            }
+        }).catch(err => {
+                console.log('account fetch failed');
+        })
+    }
 }

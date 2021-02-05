@@ -11,6 +11,7 @@ interface ScheculeProps {
     match: match<keyMatch>;
 }
 interface ScheduleStats {
+    user;
     keyVal: string;
 }
 
@@ -18,6 +19,7 @@ export class PartPage extends React.Component<ScheculeProps, ScheduleStats> {
     constructor(props: ScheculeProps) {
         super(props);
         this.state = {
+            user: null,
             keyVal : ''
         }
         this.Reserve = this.Reserve.bind(this);
@@ -29,7 +31,7 @@ export class PartPage extends React.Component<ScheculeProps, ScheduleStats> {
         return (
             <div>
                 <h2>{date}</h2>
-                <h3>{auth.currentUser.displayName}</h3>
+                <h3>{this.state.user ? auth.currentUser.displayName : null }</h3>
                 <Container>
                     <Button onClick = {() => this.Reserve('moring')}>오전</Button>
                     <Button onClick = {() => this.Reserve('noon')}>점심시간
@@ -41,6 +43,11 @@ export class PartPage extends React.Component<ScheculeProps, ScheduleStats> {
                 </Container>
             </div>
     )};
+    componentDidMount() {
+        auth.onAuthStateChanged(user => {
+            this.setState({user: user});
+        })
+    }
 
     private Reserve(part: string) {
         const { date } = this.props.match.params;
