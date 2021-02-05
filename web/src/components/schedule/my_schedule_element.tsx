@@ -32,8 +32,12 @@ export class MyScheduleElement extends React.Component<ScheduleElementProps,Sche
             </List.Item>
         );
         return(    
-            <div>  
-                <List items = {listItems}/>
+            <div>
+                {
+                    this.state.schedule.length !== 0 ?  
+                    <List items = {listItems}/> :
+                    <span>수업이 없습니다.</span>
+                }
             </div>
         )
     }

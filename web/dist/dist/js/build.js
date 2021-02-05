@@ -88381,6 +88381,7 @@ class LogIn extends React.Component {
         };
         this.SignInWithGoogle = this.SignInWithGoogle.bind(this);
         this.SignOut = this.SignOut.bind(this);
+        this.fetchAccount = this.fetchAccount.bind(this);
     }
     render() {
         return (React.createElement("div", { className: "LogIn" },
@@ -88392,7 +88393,25 @@ class LogIn extends React.Component {
                     : React.createElement("p", null, "Please sign in."),
                 this.state.user
                     ? React.createElement("button", { onClick: this.SignOut }, "Sign out")
-                    : React.createElement("button", { onClick: this.SignInWithGoogle }, "Sign in with Google")),
+                    : React.createElement(react_router_dom_1.Route, { render: ({ history }) => (React.createElement(semantic_ui_react_1.Button, { onClick: () => {
+                                firebaseConfig_1.auth.setPersistence('session').then(() => {
+                                    firebaseConfig_1.auth.signInWithPopup(firebaseConfig_1.provider).then(result => {
+                                        this.setState({ user: result.user });
+                                        client_1.fetchAccount(result.user.uid).then(response => {
+                                            if (response.data.account) {
+                                                this.setState({ account: response.data.account });
+                                                history.push('/');
+                                            }
+                                            else {
+                                                alert('회원 정보가 없습니다.\n정보를 입력해 주세요.');
+                                                history.push('/login/create account');
+                                            }
+                                        });
+                                    }).catch(err => {
+                                        console.log(err);
+                                    });
+                                });
+                            } }, "Sign in with Google")) })),
             this.state.user
                 ? React.createElement(React.Fragment, null)
                 :
@@ -88420,11 +88439,9 @@ class LogIn extends React.Component {
                 this.setState({
                     account: response.data.account
                 });
-                window.history.pushState('v1', '', '/');
             }
             else {
                 console.log("no account!");
-                window.history.pushState('v1', '', '/login/create account');
             }
         }).catch(err => {
             console.log('account fetch failed');
@@ -88511,33 +88528,17 @@ exports.CalendarPage = void 0;
 const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
 const react_calendar_1 = __webpack_require__(/*! react-calendar */ "../node_modules/react-calendar/dist/esm/index.js");
 const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "../node_modules/semantic-ui-react/dist/es/index.js");
+const react_router_dom_1 = __webpack_require__(/*! react-router-dom */ "../node_modules/react-router-dom/esm/react-router-dom.js");
 ;
 ;
 class CalendarPage extends React.Component {
     constructor(props) {
         super(props);
         this.render = () => React.createElement(semantic_ui_react_1.Container, null,
-            React.createElement(react_calendar_1.default, { value: this.state.date, onChange: this.OnDateChange, onClickDay: this.ViewSchedule }));
-        this.ViewSchedule = (date) => {
-            let toStr = date.toDateString();
-            console.log("day clicked!", toStr);
-        };
-        this.OnDateChange = value => {
-            this.setState({
-                date: value
-            });
-            this.CheckTime();
-            history.pushState('v1', '', `/schedule/reservation/${value.toDateString()}`);
-        };
+            React.createElement(react_router_dom_1.Route, { render: ({ history }) => (React.createElement(react_calendar_1.default, { onChange: value => history.push(`/schedule/reservation/${value.toDateString()}`) })) }));
         this.state = {
             date: new Date()
         };
-        this.CheckTime = this.CheckTime.bind(this);
-        this.ViewSchedule = this.ViewSchedule.bind(this);
-        this.OnDateChange = this.OnDateChange.bind(this);
-    }
-    CheckTime() {
-        console.log("calender clicked!");
     }
 }
 exports.CalendarPage = CalendarPage;
@@ -88576,11 +88577,17 @@ class PartPage extends React.Component {
             React.createElement("h2", null, date),
             React.createElement("h3", null, this.state.user ? login_1.auth.currentUser.displayName : null),
             React.createElement(semantic_ui_react_1.Container, null,
-                React.createElement(semantic_ui_react_1.Button, { onClick: () => this.Reserve('moring') }, "\uC624\uC804"),
-                React.createElement(semantic_ui_react_1.Button, { onClick: () => this.Reserve('noon') },
-                    "\uC810\uC2EC\uC2DC\uAC04",
+                React.createElement(semantic_ui_react_1.Container, null,
+                    React.createElement(semantic_ui_react_1.Button, { onClick: () => this.Reserve('moring') }, "\uC624\uC804")),
+                " ",
+                React.createElement("br", null),
+                React.createElement(semantic_ui_react_1.Container, null,
+                    React.createElement(semantic_ui_react_1.Button, { onClick: () => this.Reserve('noon') }, "\uC810\uC2EC\uC2DC\uAC04"),
                     React.createElement(semantic_ui_react_1.Comment, null, "\uC218\uAC15\uC0DD\uC774 \uC801\uC740 \uACBD\uC6B0 \uC218\uC5C5\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.")),
-                React.createElement(semantic_ui_react_1.Button, { onClick: () => this.Reserve('afternoon') }, "\uC624\uD6C4"))));
+                " ",
+                React.createElement("br", null),
+                React.createElement(semantic_ui_react_1.Container, null,
+                    React.createElement(semantic_ui_react_1.Button, { onClick: () => this.Reserve('afternoon') }, "\uC624\uD6C4")))));
     }
     ;
     componentDidMount() {
@@ -88787,8 +88794,9 @@ class MyScheduleElement extends React.Component {
                 schedule.date,
                 schedule.part,
                 React.createElement(semantic_ui_react_1.Button, { onClick: () => this.CancelLesson(schedule.id, schedule.date, schedule.part) }, "\uCDE8\uC18C")));
-            return (React.createElement("div", null,
-                React.createElement(semantic_ui_react_1.List, { items: listItems })));
+            return (React.createElement("div", null, this.state.schedule.length !== 0 ?
+                React.createElement(semantic_ui_react_1.List, { items: listItems }) :
+                React.createElement("span", null, "\uC218\uC5C5\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.")));
         };
         this.state = {
             schedule: []
