@@ -88183,19 +88183,55 @@ class AccountPage extends React.Component {
             return (React.createElement("div", null,
                 React.createElement("h1", null, "\uACC4\uC815 \uC815\uBCF4 \uC785\uB825"),
                 React.createElement(semantic_ui_react_1.Container, null,
-                    React.createElement("h3", null,
-                        "\uC774\uBA54\uC77C: ",
-                        firebaseConfig_1.auth.currentUser.email)),
+                    this.state.user ?
+                        React.createElement("div", null,
+                            React.createElement("h3", null,
+                                "\uC774\uBA54\uC77C: ",
+                                this.state.user ? firebaseConfig_1.auth.currentUser.email : null)) :
+                        React.createElement("div", null,
+                            React.createElement("span", null, "\uC774\uBA54\uC77C"),
+                            React.createElement("input", { key: 'email' }),
+                            " ",
+                            React.createElement("br", null),
+                            React.createElement("span", null, "\uBE44\uBC00\uBC88\uD638"),
+                            React.createElement("input", { key: 'password' })),
+                    React.createElement("div", null,
+                        React.createElement("span", null, "\uC774\uB984"),
+                        React.createElement("input", { key: 'name' }),
+                        " ",
+                        React.createElement("br", null),
+                        React.createElement("span", null, "\uC804\uD654\uBC88\uD638"),
+                        React.createElement("input", { key: 'phone' }),
+                        " ",
+                        React.createElement("br", null),
+                        React.createElement("span", null, "\uACFC\uC815"),
+                        React.createElement("select", { key: 'curricul' },
+                            React.createElement("option", { value: 'default' }, "--\uACFC\uC815\uC744 \uC120\uD0DD\uD558\uC138\uC694--"),
+                            React.createElement("option", { value: '' }, "\uC911\uD615"),
+                            React.createElement("option", { value: '' }, "\uC18C\uD615")))),
                 React.createElement(semantic_ui_react_1.Button, null, "\uCDE8\uC18C"),
-                React.createElement(semantic_ui_react_1.Button, null, "\uD655\uC778")));
+                React.createElement(semantic_ui_react_1.Button, { onClick: this.CreateAccount }, "\uD655\uC778")));
         };
         this.CreateAccount = () => {
+            firebaseConfig_1.auth.onAuthStateChanged(user => {
+                if (user) {
+                }
+                else {
+                }
+            });
             let accountData = {
                 id: firebaseConfig_1.auth.currentUser.uid,
                 name: "default"
             };
         };
-        this.state = {};
+        this.state = {
+            user: null
+        };
+    }
+    componentDidMount() {
+        firebaseConfig_1.auth.onAuthStateChanged(user => {
+            this.setState({ user: user });
+        });
     }
 }
 exports.AccountPage = AccountPage;
@@ -88315,6 +88351,8 @@ __exportStar(__webpack_require__(/*! ./account */ "./components/login/account.ts
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LogIn = void 0;
 const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
+const react_router_dom_1 = __webpack_require__(/*! react-router-dom */ "../node_modules/react-router-dom/esm/react-router-dom.js");
+const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "../node_modules/semantic-ui-react/dist/es/index.js");
 const firebaseConfig_1 = __webpack_require__(/*! ./firebaseConfig */ "./components/login/firebaseConfig.tsx");
 const client_1 = __webpack_require__(/*! ./client */ "./components/login/client.ts");
 class LogIn extends React.Component {
@@ -88322,29 +88360,13 @@ class LogIn extends React.Component {
         super(props);
         this.SignInWithGoogle = () => {
             firebaseConfig_1.auth.setPersistence('local').then(() => {
-                firebaseConfig_1.auth.signInWithPopup(firebaseConfig_1.provider).then(() => {
-                    this.setState({ user: firebaseConfig_1.auth.currentUser });
-                    console.log("login: ", this.state.user);
-                }).then(() => {
+                firebaseConfig_1.auth.signInWithPopup(firebaseConfig_1.provider).then(result => {
+                    this.setState({ user: result.user });
+                    console.log("login: ", this.state.user.uid);
                     this.fetchAccount(this.state.user.uid);
-                    if (!this.state.account) {
-                        let content = {
-                            id: this.state.user.uid,
-                            name: this.state.user.displayName,
-                            phoneNum: '01000000000',
-                            authority: 'student',
-                            schedule: [],
-                        };
-                        client_1.postAccount(content).then(() => {
-                            this.fetchAccount(this.state.user.uid);
-                            console.log("created!");
-                        });
-                    }
-                    else {
-                    }
+                }).catch(err => {
+                    console.log(err);
                 });
-                console.log("auth: ", firebaseConfig_1.auth.currentUser);
-                console.log(this.state.user);
             });
         };
         this.SignOut = () => {
@@ -88361,8 +88383,6 @@ class LogIn extends React.Component {
         this.SignOut = this.SignOut.bind(this);
     }
     render() {
-        console.log("current: ", this.state.user);
-        console.log("auth: ", firebaseConfig_1.auth.currentUser);
         return (React.createElement("div", { className: "LogIn" },
             React.createElement("header", null,
                 this.state.user
@@ -88377,16 +88397,35 @@ class LogIn extends React.Component {
                 ? React.createElement(React.Fragment, null)
                 :
                     React.createElement("div", null,
-                        React.createElement("input", { id: 'user_email' }),
-                        React.createElement("input", { id: 'user_pw' }),
-                        React.createElement("button", null, "log in"),
-                        React.createElement("button", null, "create account"))));
+                        React.createElement(semantic_ui_react_1.Container, null,
+                            React.createElement("input", { id: 'user_email' }),
+                            React.createElement("input", { id: 'user_pw' }),
+                            React.createElement("button", null, "log in")),
+                        React.createElement(semantic_ui_react_1.Container, null,
+                            React.createElement(semantic_ui_react_1.Button, { as: react_router_dom_1.Link, to: '/login/create account' }, "\uD68C\uC6D0\uAC00\uC785")))));
+    }
+    componentDidMount() {
+        firebaseConfig_1.auth.onAuthStateChanged(user => {
+            if (user) {
+                this.setState({ user: user });
+                this.render();
+            }
+        });
     }
     fetchAccount(keyVal) {
         client_1.fetchAccount(keyVal).then(response => {
-            this.setState({
-                account: response.data.account
-            });
+            console.log(response.data.account);
+            if (response.data.account) {
+                console.log('login!');
+                this.setState({
+                    account: response.data.account
+                });
+                window.history.pushState('v1', '', '/');
+            }
+            else {
+                console.log("no account!");
+                window.history.pushState('v1', '', '/login/create account');
+            }
         }).catch(err => {
             console.log('account fetch failed');
         });
@@ -88472,23 +88511,23 @@ exports.CalendarPage = void 0;
 const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
 const react_calendar_1 = __webpack_require__(/*! react-calendar */ "../node_modules/react-calendar/dist/esm/index.js");
 const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "../node_modules/semantic-ui-react/dist/es/index.js");
-const react_router_dom_1 = __webpack_require__(/*! react-router-dom */ "../node_modules/react-router-dom/esm/react-router-dom.js");
 ;
 ;
 class CalendarPage extends React.Component {
     constructor(props) {
         super(props);
         this.render = () => React.createElement(semantic_ui_react_1.Container, null,
-            React.createElement(react_calendar_1.default, { value: this.state.date, onChange: this.OnDateChange, onClickDay: this.ViewSchedule, tileContent: React.createElement(react_router_dom_1.NavLink, { to: `/schedule/reservation/${this.state.date.toDateString()}` }, "link") }));
+            React.createElement(react_calendar_1.default, { value: this.state.date, onChange: this.OnDateChange, onClickDay: this.ViewSchedule }));
         this.ViewSchedule = (date) => {
             let toStr = date.toDateString();
             console.log("day clicked!", toStr);
         };
-        this.OnDateChange = date => {
+        this.OnDateChange = value => {
             this.setState({
-                date: date
+                date: value
             });
             this.CheckTime();
+            history.pushState('v1', '', `/schedule/reservation/${value.toDateString()}`);
         };
         this.state = {
             date: new Date()
@@ -88525,6 +88564,7 @@ class PartPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            user: null,
             keyVal: ''
         };
         this.Reserve = this.Reserve.bind(this);
@@ -88534,7 +88574,7 @@ class PartPage extends React.Component {
         console.log("date: ", date);
         return (React.createElement("div", null,
             React.createElement("h2", null, date),
-            React.createElement("h3", null, login_1.auth.currentUser.displayName),
+            React.createElement("h3", null, this.state.user ? login_1.auth.currentUser.displayName : null),
             React.createElement(semantic_ui_react_1.Container, null,
                 React.createElement(semantic_ui_react_1.Button, { onClick: () => this.Reserve('moring') }, "\uC624\uC804"),
                 React.createElement(semantic_ui_react_1.Button, { onClick: () => this.Reserve('noon') },
@@ -88543,6 +88583,11 @@ class PartPage extends React.Component {
                 React.createElement(semantic_ui_react_1.Button, { onClick: () => this.Reserve('afternoon') }, "\uC624\uD6C4"))));
     }
     ;
+    componentDidMount() {
+        login_1.auth.onAuthStateChanged(user => {
+            this.setState({ user: user });
+        });
+    }
     Reserve(part) {
         const { date } = this.props.match.params;
         let _id = login_1.auth.currentUser.uid;

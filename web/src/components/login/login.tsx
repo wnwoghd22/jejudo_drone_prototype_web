@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Route, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { Button, Container } from 'semantic-ui-react';
 import { auth, provider, session, local } from './firebaseConfig'
 import { Account, fetchAccount, postAccount } from './client'
 
@@ -65,10 +66,16 @@ export class LogIn extends React.Component<loginProps, loginState> {
                     ? <></>
                     :
                     <div>
-                        <input id = 'user_email'></input>
-                        <input id = 'user_pw'></input>
-                        <button>log in</button>
-                        <button>create account</button>
+                        <Container>
+                            <input id = 'user_email'></input>
+                            <input id = 'user_pw'></input>       
+                            <button>log in</button>
+                        </Container>
+                        <Container>     
+                            <Button as={Link} to={'/login/create account'}>
+                                회원가입
+                            </Button>
+                        </Container>
                     </div>
                 }
             </div>

@@ -33,13 +33,16 @@ export class PartPage extends React.Component<ScheculeProps, ScheduleStats> {
                 <h2>{date}</h2>
                 <h3>{this.state.user ? auth.currentUser.displayName : null }</h3>
                 <Container>
-                    <Button onClick = {() => this.Reserve('moring')}>오전</Button>
-                    <Button onClick = {() => this.Reserve('noon')}>점심시간
-                        <Comment>
-                            수강생이 적은 경우 수업하지 않습니다.
-                        </Comment>
-                    </Button>
-                    <Button onClick = {() => this.Reserve('afternoon')}>오후</Button>
+                    <Container>
+                        <Button onClick = {() => this.Reserve('moring')}>오전</Button>
+                    </Container> <br/>
+                    <Container> 
+                        <Button onClick = {() => this.Reserve('noon')}>점심시간</Button>                            
+                        <Comment>수강생이 적은 경우 수업하지 않습니다.</Comment>
+                    </Container> <br/>
+                    <Container>
+                        <Button onClick = {() => this.Reserve('afternoon')}>오후</Button>
+                    </Container>
                 </Container>
             </div>
     )};
