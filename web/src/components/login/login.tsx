@@ -62,7 +62,7 @@ export class LogIn extends React.Component<loginProps, loginState> {
                 <header>
                     {
                         this.state.user
-                        ? <p>Hello, {this.state.user.displayName}</p>
+                        ? <p>Hello, {this.state.account.name}</p>
                         : <p>Please sign in.</p>
                     }
 
