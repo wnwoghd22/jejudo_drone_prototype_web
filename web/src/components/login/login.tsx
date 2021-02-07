@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Link, Route } from 'react-router-dom';
 import { Button, Container } from 'semantic-ui-react';
 import { auth, provider, session, local } from './firebaseConfig'
-import { Account, fetchAccount, postAccount } from './client'
+import { Account, fetchAccount, postAccount, deleteAccount } from './client'
 
 interface loginProps {
     
@@ -120,7 +120,12 @@ export class LogIn extends React.Component<loginProps, loginState> {
                 console.log("no account!");
             }
         }).catch(err => {
-                console.log('account fetch failed');
+                console.log('account fetch failed:', err);
+        })
+    }
+    private deleteAccount(keyVal: string) {
+        deleteAccount(keyVal).then(result => {
+            
         })
     }
 }
