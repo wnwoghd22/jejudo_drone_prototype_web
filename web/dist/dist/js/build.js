@@ -88801,7 +88801,7 @@ class PartPage extends React.Component {
             React.createElement("h3", null, this.state.user ? login_1.auth.currentUser.displayName : null),
             React.createElement(semantic_ui_react_1.Container, null,
                 React.createElement(semantic_ui_react_1.Container, null,
-                    React.createElement(semantic_ui_react_1.Button, { onClick: () => this.Reserve('moring') }, "\uC624\uC804")),
+                    React.createElement(semantic_ui_react_1.Button, { onClick: () => this.Reserve('morning') }, "\uC624\uC804")),
                 " ",
                 React.createElement("br", null),
                 React.createElement(semantic_ui_react_1.Container, null,
