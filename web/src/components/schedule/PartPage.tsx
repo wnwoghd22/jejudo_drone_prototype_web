@@ -36,7 +36,7 @@ export class PartPage extends React.Component<ScheculeProps, ScheduleStats> {
                 <h3>{this.state.user ? auth.currentUser.displayName : null }</h3>
                 <Container>
                     <Container>
-                        <Button onClick = {() => this.Reserve('moring')}>오전</Button>
+                        <Button onClick = {() => this.Reserve('morning')}>오전</Button>
                     </Container> <br/>
                     <Container> 
                         <Button onClick = {() => this.Reserve('noon')}>점심시간</Button>                            
