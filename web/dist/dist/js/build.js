@@ -88798,7 +88798,7 @@ class PartPage extends React.Component {
         console.log("date: ", date);
         return (React.createElement("div", null,
             React.createElement("h2", null, date),
-            React.createElement("h3", null, this.state.user ? login_1.auth.currentUser.displayName : null),
+            React.createElement("h3", null, this.state.account ? this.state.account.name : null),
             React.createElement(semantic_ui_react_1.Container, null,
                 React.createElement(semantic_ui_react_1.Container, null,
                     React.createElement(semantic_ui_react_1.Button, { onClick: () => this.Reserve('morning') }, "\uC624\uC804")),
