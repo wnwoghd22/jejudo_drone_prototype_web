@@ -88045,7 +88045,8 @@ class PostForm extends React.Component {
         this.state = {
             title: '',
             body: '',
-            attachments: []
+            attachments: [],
+            account: null
         };
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleBodyChange = this.handleBodyChange.bind(this);
@@ -88061,12 +88062,10 @@ class PostForm extends React.Component {
     }
     PostContents(event) {
         event.preventDefault();
-        login_1.auth.onAuthStateChanged(user => {
-        });
         const payload = {
             title: this.state.title,
             writer: {
-                name: login_1.auth.currentUser.displayName,
+                name: this.state.account.name,
                 id: login_1.auth.currentUser.uid,
             },
             body: this.state.body,
@@ -88078,6 +88077,20 @@ class PostForm extends React.Component {
             });
         }).catch(err => {
             console.log("post failed!");
+            console.log(err);
+        });
+    }
+    componentDidMount() {
+        login_1.auth.onAuthStateChanged(user => {
+            if (user) {
+                this.fetchAccount(user.uid);
+            }
+        });
+    }
+    fetchAccount(key) {
+        login_1.fetchAccount(key).then(result => {
+            this.setState({ account: result.data.account });
+        }).catch(err => {
             console.log(err);
         });
     }
@@ -88490,6 +88503,19 @@ class LogIn extends React.Component {
                         });
                     });
                 } }, "Sign in with Google")) });
+        this.SignIn = () => React.createElement(react_router_dom_1.Route, { render: ({ history }) => (React.createElement(semantic_ui_react_1.Button, { onClick: () => {
+                    let _id = document.getElementById('user_email').value;
+                    let _pw = document.getElementById('user_pw').value;
+                    firebaseConfig_1.auth.signInWithEmailAndPassword(_id, _pw).then(result => {
+                        client_1.fetchAccount(result.user.uid).then(response => {
+                            this.setState({
+                                user: result.user,
+                                account: response.data.account,
+                            });
+                            history.push('/');
+                        });
+                    });
+                } }, "Log In")) });
         this.SignOut = () => {
             firebaseConfig_1.auth.signOut().then(() => {
                 this.setState({ user: firebaseConfig_1.auth.currentUser });
@@ -88522,7 +88548,7 @@ class LogIn extends React.Component {
                         React.createElement(semantic_ui_react_1.Container, null,
                             React.createElement("input", { id: 'user_email' }),
                             React.createElement("input", { id: 'user_pw' }),
-                            React.createElement("button", null, "log in")),
+                            React.createElement(this.SignIn, null)),
                         React.createElement(semantic_ui_react_1.Container, null,
                             React.createElement(semantic_ui_react_1.Button, { as: react_router_dom_1.Link, to: '/login/create account' }, "\uD68C\uC6D0\uAC00\uC785")))));
     }
