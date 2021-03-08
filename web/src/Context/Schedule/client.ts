@@ -1,23 +1,13 @@
-import axios from 'axios';
-import Axios, { AxiosInstance, AxiosResponse, CancelToken } from 'axios';
+import { AxiosResponse, CancelToken } from 'axios';
 import { instance } from '../clientConfig'
 
-interface schedule {
-    id?: string;
-    date?: string;
-    part?: string;
-}
-interface student {
-    name?: string;
-}
-
-const postStudentToList = (date: string, part: string, payload: student, cancelToken = null) :
-Promise<AxiosResponse<schedule>> => {
+const postStudentToList = (date: string, part: string, payload: {key: string, name: string, }, cancelToken: CancelToken = null) :
+Promise<AxiosResponse<{ result: string }>> => {
     return instance.post(`/schedule/${date}/${part}`, payload, {
         cancelToken
     });
 };
-const postScheduletoAccount = (key: string, payload: schedule, params = {}, cancelToken: CancelToken = null) :
+const postScheduletoAccount = (key: string, payload: ISchedule, params = {}, cancelToken: CancelToken = null) :
 Promise<AxiosResponse<{ result: string }>> => {
     return instance.post(`/accounts/${key}/schedule`, payload, {
         params,
@@ -26,14 +16,14 @@ Promise<AxiosResponse<{ result: string }>> => {
 }
 
 const fetchScheduleList = (params = {}, cancelToken: CancelToken = null) :
-Promise<AxiosResponse<{ schedule: schedule[] }>> => {
+Promise<AxiosResponse<{ schedule: ISchedule[] }>> => {
     return instance.get(`/schedule`, {
         params,
         cancelToken
     });
 };
 const fetchStudentsList = (date: string, part: string, params = {}, cancelToken = null) :
-Promise<AxiosResponse<{ list: student[] }>> => {
+Promise<AxiosResponse<{ list: IUser[] }>> => {
     return instance.get(`/schedule/${date}/${part}`, {
         params,
         cancelToken
@@ -41,7 +31,7 @@ Promise<AxiosResponse<{ list: student[] }>> => {
 };
 
 const fetchSchedulefromAccount = (key: string, params = {}, cancelToken: CancelToken = null) :
-Promise<AxiosResponse<{ schedule: schedule[] }>> => {
+Promise<AxiosResponse<{ schedule: ISchedule[] }>> => {
     return instance.get(`/accounts/${key}/schedule`, {
         params,
         cancelToken
@@ -61,7 +51,6 @@ Promise<AxiosResponse<{ result: string }>> => {
 }
 
 
-export { schedule, student,
-    postScheduletoAccount, postStudentToList,
+export { postScheduletoAccount, postStudentToList,
     fetchScheduleList, fetchStudentsList, fetchSchedulefromAccount,
     cancelScheduleOfAccount, deleteStudentOfSchedule }

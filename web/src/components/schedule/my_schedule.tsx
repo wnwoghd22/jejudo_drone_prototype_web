@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { List } from 'semantic-ui-react';
-import { auth, Account, fetchAccount } from '../login'
+import { auth, Account, fetchAccount } from '../User'
 import { MyScheduleElement } from './my_schedule_element';
 
 interface ScheduleProps {

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { match } from 'react-router-dom';
 import { Segment, Comment, Button } from 'semantic-ui-react';
-import { Announcement, deleteAnnouncement } from './client';
 import { AnnounceForm } from './AnnounceForm';
 
 interface keyMatch {
@@ -11,7 +10,7 @@ interface formProps {
     match: match<keyMatch>;
 }
 interface formState {
-    content: Announcement;
+    content: INotice;
 }
 
 export class AnnouncePage extends React.Component<formProps, formState> {

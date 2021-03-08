@@ -6,7 +6,7 @@ import { BrowserRouter, Redirect, Route, Link } from 'react-router-dom';
 import { AnnounceList, AnnouncePage, PostForm } from './announce';
 import { Button, Container } from 'semantic-ui-react';
 import { CalendarPage, CalendarListPage, PartPage, PartListPage, MyScheduleList } from './schedule';
-import { auth, LogIn, AccountPage } from './login'
+import { auth, LogIn, AccountPage } from './User'
 
 interface boxprops {
 

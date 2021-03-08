@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Container, Message, Button, List } from 'semantic-ui-react';
 import { schedule, fetchSchedulefromAccount,
     cancelScheduleOfAccount, deleteStudentOfSchedule } from './client';
-import { auth } from '../login';
+import { auth } from '../User';
 
 interface ScheduleElementProps {
 

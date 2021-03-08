@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Menu, Button, Table, Label, Icon, Grid, Form } from 'semantic-ui-react';
-import { Announcement, fetchAnnounceList } from './client';
+
+import { NoticeContext } from '../../Context' 
 
 
 function clamp(x: number, min: number, max: number) {
@@ -58,7 +59,7 @@ interface AnnounceProps {
 };
 
 interface AnnounceStats {
-    announceList : Announcement[]
+    announceList : INotice[]
 
     listPageSize: number;
     listCurrentPage: number;
@@ -66,6 +67,8 @@ interface AnnounceStats {
 };
 
 export class AnnounceList extends React.Component<AnnounceProps, AnnounceStats> {
+
+    static contextType = NoticeContext;
 
     constructor(props: AnnounceProps) {
         super(props);
@@ -160,7 +163,7 @@ export class AnnounceList extends React.Component<AnnounceProps, AnnounceStats> 
     }
 
     private fetchList = () => {
-        fetchAnnounceList()
+        this.context.fetchAnnounceList()
             .then(response => {
                 this.setState({ announceList: response.data.announcements });
             })

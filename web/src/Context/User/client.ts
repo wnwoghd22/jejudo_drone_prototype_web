@@ -2,32 +2,21 @@ import axios from 'axios';
 import Axios, { AxiosInstance, AxiosResponse, CancelToken } from 'axios';
 import { instance } from '../clientConfig'
 
-interface Account {
-    id?: string;
-    name?: string;
-    authority?: string;
-    phoneNum?: string;
-    curriculum?: string;
-
-    schedule?: Date[];
-
-}
-
 const fetchAccountList = (params = {}, cancelToken: CancelToken = null) :
-Promise<AxiosResponse<{ accounts: Account[] }>> => {
+Promise<AxiosResponse<{ accounts: IUser[] }>> => {
     return instance.get(`/accounts`, {
         params,
         cancelToken
     });
 };
-const postAccount = (payload: Account, cancelToken: CancelToken = null) : 
-Promise<AxiosResponse<Account>> => {
+const postAccount = (payload: IUser, cancelToken: CancelToken = null) : 
+Promise<AxiosResponse<{ result: string }>> => {
     return instance.post(`/accounts`, payload, {
         cancelToken
     });
 };
 const fetchAccount = (key: string, params = {}, cancelToken: CancelToken = null) :
-Promise<AxiosResponse<{ account: Account }>> => {
+Promise<AxiosResponse<{ account: IUser }>> => {
     return instance.get(`/accounts/${key}`, {
         params,
         cancelToken
@@ -40,4 +29,4 @@ Promise<AxiosResponse<{result: string}>> => {
     });
 }
 
-export { Account, fetchAccountList, postAccount, fetchAccount, deleteAccount }
+export { fetchAccountList, postAccount, fetchAccount, deleteAccount }

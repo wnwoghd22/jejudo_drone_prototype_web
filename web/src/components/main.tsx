@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Menu, Icon } from 'semantic-ui-react';
 import { Link, NavLink } from 'react-router-dom';
-import { auth } from './login'
+import { auth } from './User'
 
 interface MainMenuState {
     user?,

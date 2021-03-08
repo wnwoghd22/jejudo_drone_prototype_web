@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Container, Button, Comment } from 'semantic-ui-react';
 import { match } from 'react-router-dom';
 import { schedule, student, postScheduletoAccount, postStudentToList } from './client';
-import { auth, Account, fetchAccount } from '../login'
+import { auth, Account, fetchAccount } from '../User'
 
 interface keyMatch {
     date: string;
@@ -73,8 +73,12 @@ export class PartPage extends React.Component<ScheculeProps, ScheduleStats> {
                     key: _id,
                     name: this.state.account.name,
                 } as student;
-                postStudentToList(date, part, student);
-                alert("신청되었습니다.");
+                postStudentToList(date, part, student).then(response => {
+                    console.log(response);
+                    alert("신청되었습니다.");
+                }).catch(e => {
+                    console.log(e);
+                })
             }
         })
     }
