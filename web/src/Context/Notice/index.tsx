@@ -26,6 +26,7 @@ const NoticeContextProvider = ({children} : Props) => {
     const fetchList = () => {
         setIsLoading(false);
         Client.fetchNoticeList().then(response => {
+            console.log(response.data);
             setList(response.data.announcements);
             setIsLoading(true);
         }).catch(err => {
@@ -57,6 +58,10 @@ const NoticeContextProvider = ({children} : Props) => {
     const deleteContent = (key: string) => {
         Client.deleteNotice(key);
     }
+
+    React.useEffect(() => {
+        fetchList();
+    }, []);
 
     return (
         <NoticeContext.Provider

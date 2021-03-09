@@ -17,4 +17,4 @@ const CalendarPage = () => {
     );
 }
 
-export default CalendarPage;
+export { CalendarPage }

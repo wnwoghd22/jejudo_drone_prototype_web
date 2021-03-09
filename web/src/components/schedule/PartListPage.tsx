@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Container, Button, Comment, List, ListItem } from 'semantic-ui-react';
 import { match } from 'react-router-dom';
-import {student, fetchStudentsList } from './client';
+
+import { ScheduleContext } from '../../Context';
 
 interface keyMatch {
     date: string;
@@ -11,10 +12,13 @@ interface ScheculeProps {
 }
 interface ScheduleStats {
     selected?: string,
-    studentsList?: student[]
+    studentsList?: IUser[]
 }
 
 export class PartListPage extends React.Component<ScheculeProps, ScheduleStats> {
+
+    static contextType = ScheduleContext;
+
     constructor(props: ScheculeProps) {
         super(props);
         this.state = {
@@ -62,7 +66,7 @@ export class PartListPage extends React.Component<ScheculeProps, ScheduleStats> 
     }
     fetchStudentsList(part: string) {
         let { date } = this.props.match.params;
-        fetchStudentsList(date, part).then(response => {
+        this.context.fetchStudentsList(date, part).then(response => {
             this.setState({
                 selected: part,
                 studentsList: response.data.list

@@ -65,4 +65,4 @@ const PostPage = () => {
     );
 }
 
-export default PostPage;
+export { PostPage }

@@ -1,4 +1,3 @@
-export * from './AnnounceList';
-export * from './AnnounceForm';
+export * from './NoticeList';
 export * from './PostPage';
-export * from './AnnouncePage';
+export * from './NoticePage';

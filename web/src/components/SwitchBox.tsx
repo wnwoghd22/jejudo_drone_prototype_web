@@ -3,10 +3,10 @@ import { render } from 'react-dom';
 import { Switch } from 'react-router';
 import * as Firebaseui from 'firebaseui'
 import { BrowserRouter, Redirect, Route, Link } from 'react-router-dom';
-import { AnnounceList, AnnouncePage, PostForm } from './announce';
+import { NoticeList, NoticePage , PostPage } from './announce';
 import { Button, Container } from 'semantic-ui-react';
 import { CalendarPage, CalendarListPage, PartPage, PartListPage, MyScheduleList } from './schedule';
-import { auth, LogIn, AccountPage } from './User'
+import { LoginPage, AccountPage } from './User'
 
 interface boxprops {
 
@@ -28,15 +28,15 @@ export class SwitchBox extends React.Component<boxprops, boxstate> {
             <Switch>
                 <Route
                     exact = {true} path = '/announcements'
-                    component = { AnnounceList }
+                    component = { NoticeList }
                 />
                 <Route
                     exact = {true} path = '/announcements/page/:key'
-                    component = { AnnouncePage }
+                    component = { NoticePage }
                 />
                 <Route
                     exact = {true} path = '/announcements/post'
-                    component = { PostForm }
+                    component = { PostPage }
                 />
                 <Route
                     exact = {true} path = '/schedule/reservation'
@@ -60,7 +60,7 @@ export class SwitchBox extends React.Component<boxprops, boxstate> {
                 />
                 <Route
                     exact = {true} path = '/login'
-                    component = { LogIn }
+                    component = { LoginPage }
                 />
                 <Route
                     exact = {true} path = '/login/create account'
@@ -92,13 +92,4 @@ export class SwitchBox extends React.Component<boxprops, boxstate> {
             </Switch>
         </Container>
     );
-    componentDidMount() {
-        auth.onAuthStateChanged(user => {
-            if(user) {
-                this.setState({user: user});
-            } else {
-                this.setState({user: null});
-            }
-        })
-    }
 };

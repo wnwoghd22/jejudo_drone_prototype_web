@@ -1,51 +1,21 @@
 import * as React from 'react';
 import { List } from 'semantic-ui-react';
-import { auth, Account, fetchAccount } from '../User'
-import { MyScheduleElement } from './my_schedule_element';
+import MyScheduleElement from './my_schedule_element';
 
-interface ScheduleProps {
+import { UserContext } from '../../Context';
 
-};
-interface ScheduleStats {
-    user?;
-    account?: Account;
-};
+const MyScheduleList = () => {
+    const {user} = React.useContext<IUserContext>(UserContext);
 
-export class MyScheduleList extends React.Component<ScheduleProps, ScheduleStats> {
-    constructor(props: ScheduleProps) {
-        super(props);
-        this.state = {
-            user: null,
-            account: null,
-        }
-    }
-    public render() {
-        return  (
-            <div>
-                <h1>나의 수업</h1>
-                <h2>{   this.state.account ?
-                                this.state.account.name
-                            :   "로그인 하십시오." }</h2>
-                <MyScheduleElement/>
-            </div>
-        )
-    }
-    componentWillUnmount() {
-        
-    }
-    componentDidMount() {
-        auth.onAuthStateChanged(user => {
-            if(user) {
-                fetchAccount(user.uid).then(result => {
-                    this.setState({
-                        user: user,
-                        account: result.data.account,
-                    })
-                })
-            }
-            else {
-                
-            }
-        })
-    }
+    return  (
+        <div>
+            <h1>나의 수업</h1>
+            <h2>{   user ?
+                            user.name
+                        :   "로그인 하십시오." }</h2>
+            <MyScheduleElement/>
+        </div>
+    );
 }
+
+export { MyScheduleList }

@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { Button, Form, Dropdown, DropdownProps, InputOnChangeData } from 'semantic-ui-react';
 import { Route } from 'react-router-dom';
-import { auth } from './firebaseConfig';
-import { Account, fetchAccount, postAccount } from './client';
+
+import {UserContext} from '../../Context';
+import {auth} from '../../Context/User/firebaseConfig';
 
 
 const INPUT_FIELD_EMAIL  = "input_email";
@@ -22,7 +23,7 @@ interface accountState {
     user;
     email: string;
     password: string;
-    account: Account;
+    account: IUser;
 
     [INPUT_FIELD_EMAIL]  : string;
     [INPUT_FIELD_NAME]   : string;
@@ -61,6 +62,8 @@ export class AccountPage extends React.Component<accountProps, accountState> {
         this.onDropdownCourseChanges = this.onDropdownCourseChanges.bind(this);
         this.onInputChanges = this.onInputChanges.bind(this);
     }
+
+    static contextType = UserContext;
 
     public render = () => {
         return(
@@ -139,9 +142,9 @@ export class AccountPage extends React.Component<accountProps, accountState> {
     }
 
     componentDidMount() {
-        auth.onAuthStateChanged(user => {
-            this.setState({user: user});
-        });
+        if(this.context.user !== undefined) {
+            this.setState({user: this.context.user});
+        }
     }
 
     private CreateAccount = () => <Route render = {({ history }) =>
@@ -171,39 +174,22 @@ export class AccountPage extends React.Component<accountProps, accountState> {
             // Request
             // -----------------------------------------------------------------------
 
-            auth.onAuthStateChanged(user => {
-                if(user) {
-                    this.setState({
-                        account : {
-                            id: user.uid,
-                            name: _name,
-                            phoneNum: _phoneNum,
-                            curriculum: _curriculum,
-                        } as Account
-                    });
-                    postAccount(this.state.account).then(() =>{
-                        alert('계정이 생성되었습니다.');
-                        history.push('/');
-                    })
-                } else {
-                    const _email: string = this.state[INPUT_FIELD_EMAIL];
-                    const _password: string = this.state[INPUT_FIELD_PASSWD];
+            const _email: string = this.state[INPUT_FIELD_EMAIL];
+            const _password: string = this.state[INPUT_FIELD_PASSWD];
 
-                    auth.createUserWithEmailAndPassword(_email, _password).then(result => {
-                        this.setState({
-                            account : {
-                                id: result.user.uid,
-                                name: _name,
-                                phoneNum: _phoneNum,
-                                curriculum: _curriculum,
-                            } as Account
-                        });
-                        postAccount(this.state.account).then(() => {
-                            alert('계정이 생성되었습니다.');
-                            history.push('/');
-                        })
-                    })
-                }
+            auth.createUserWithEmailAndPassword(_email, _password).then(result => {
+                this.setState({
+                    account : {
+                        id: result.user.uid,
+                        name: _name,
+                        phoneNum: _phoneNum,
+                        curriculum: _curriculum,
+                    } as IUser
+                });
+                this.context.postAccount(this.state.account).then(() => {
+                    alert('계정이 생성되었습니다.');
+                    history.push('/');
+                })
             });
         }}>확인
         </Button>
