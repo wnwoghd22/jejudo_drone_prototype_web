@@ -1,3 +1,2 @@
-export * from './main'
+export * from './MainMenu'
 export * from './SwitchBox'
-//export * from './login/login'

@@ -87662,36 +87662,9 @@ module.exports = function(originalModule) {
 
 /***/ }),
 
-/***/ "./Routes.tsx":
-/*!********************!*\
-  !*** ./Routes.tsx ***!
-  \********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
-const react_dom_1 = __webpack_require__(/*! react-dom */ "../node_modules/react-dom/index.js");
-const react_router_dom_1 = __webpack_require__(/*! react-router-dom */ "../node_modules/react-router-dom/esm/react-router-dom.js");
-const main_1 = __webpack_require__(/*! ./components/main */ "./components/main.tsx");
-const SwitchBox_1 = __webpack_require__(/*! ./components/SwitchBox */ "./components/SwitchBox.tsx");
-const routes = React.createElement(react_router_dom_1.BrowserRouter, null,
-    React.createElement("div", { id: 'wrapper' },
-        React.createElement(main_1.MainMenu, null),
-        React.createElement("main", { style: {
-                margin: '1rem 0 1rem 16rem'
-            } },
-            React.createElement(SwitchBox_1.SwitchBox, null))));
-react_dom_1.render(routes, document.getElementById('app'));
-
-
-/***/ }),
-
-/***/ "./components/SwitchBox.tsx":
+/***/ "./Context/Notice/client.ts":
 /*!**********************************!*\
-  !*** ./components/SwitchBox.tsx ***!
+  !*** ./Context/Notice/client.ts ***!
   \**********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -87699,481 +87672,603 @@ react_dom_1.render(routes, document.getElementById('app'));
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SwitchBox = void 0;
-const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
-const react_router_1 = __webpack_require__(/*! react-router */ "../node_modules/react-router/esm/react-router.js");
-const react_router_dom_1 = __webpack_require__(/*! react-router-dom */ "../node_modules/react-router-dom/esm/react-router-dom.js");
-const announce_1 = __webpack_require__(/*! ./announce */ "./components/announce/index.ts");
-const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "../node_modules/semantic-ui-react/dist/es/index.js");
-const schedule_1 = __webpack_require__(/*! ./schedule */ "./components/schedule/index.ts");
-const login_1 = __webpack_require__(/*! ./login */ "./components/login/index.ts");
-class SwitchBox extends React.Component {
-    constructor(props) {
-        super(props);
-        this.render = () => (React.createElement(semantic_ui_react_1.Container, null,
-            React.createElement(react_router_1.Switch, null,
-                React.createElement(react_router_dom_1.Route, { exact: true, path: '/announcements', component: announce_1.AnnounceList }),
-                React.createElement(react_router_dom_1.Route, { exact: true, path: '/announcements/page/:key', component: announce_1.AnnouncePage }),
-                React.createElement(react_router_dom_1.Route, { exact: true, path: '/announcements/post', component: announce_1.PostForm }),
-                React.createElement(react_router_dom_1.Route, { exact: true, path: '/schedule/reservation', component: schedule_1.CalendarPage }),
-                React.createElement(react_router_dom_1.Route, { exact: true, path: '/schedule/reservation/:date', component: schedule_1.PartPage }),
-                React.createElement(react_router_dom_1.Route, { exact: true, path: '/schedule/my schedule', component: schedule_1.MyScheduleList }),
-                React.createElement(react_router_dom_1.Route, { exact: true, path: '/schedule/list', component: schedule_1.CalendarListPage }),
-                React.createElement(react_router_dom_1.Route, { exact: true, path: '/schedule/list/:date', component: schedule_1.PartListPage }),
-                React.createElement(react_router_dom_1.Route, { exact: true, path: '/login', component: login_1.LogIn }),
-                React.createElement(react_router_dom_1.Route, { exact: true, path: '/login/create account', component: login_1.AccountPage }),
-                React.createElement(react_router_dom_1.Route, { exact: true, path: '/', render: () => React.createElement("div", null,
-                        React.createElement("h1", null, "Main Menu"),
-                        React.createElement("div", { id: "firebaseui-auth-container" },
-                            React.createElement(semantic_ui_react_1.Button, { key: 'login', as: react_router_dom_1.Link, to: '/login' }, this.state.user ?
-                                '회원 정보' :
-                                'log in'))) }))));
-        this.state = {
-            user: null,
-        };
-    }
-    componentDidMount() {
-        login_1.auth.onAuthStateChanged(user => {
-            if (user) {
-                this.setState({ user: user });
-            }
-            else {
-                this.setState({ user: null });
-            }
-        });
-    }
-}
-exports.SwitchBox = SwitchBox;
-;
-
-
-/***/ }),
-
-/***/ "./components/announce/AnnounceForm.tsx":
-/*!**********************************************!*\
-  !*** ./components/announce/AnnounceForm.tsx ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.AnnounceForm = void 0;
-const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
-const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "../node_modules/semantic-ui-react/dist/es/index.js");
-const client_1 = __webpack_require__(/*! ./client */ "./components/announce/client.ts");
-class AnnounceForm extends React.Component {
-    constructor(props) {
-        super(props);
-        this.fetchContent = (key) => {
-            client_1.fetchAnnounceContent(key)
-                .then(response => {
-                this.setState({ content: response.data.content });
-            })
-                .catch(err => {
-                console.log("fetch failed!");
-                console.log(err);
-            });
-        };
-        this.state = {
-            content: {
-                id: '',
-                title: '',
-                date: new Date,
-                writer: {
-                    id: '',
-                    name: ''
-                },
-                body: ''
-            }
-        };
-    }
-    render() {
-        const dateVal = this.state.content.date.toString();
-        return (React.createElement(semantic_ui_react_1.Comment.Group, null,
-            React.createElement(semantic_ui_react_1.Header, { as: 'h2', dividing: true }, this.state.content.title),
-            React.createElement(semantic_ui_react_1.Comment, null,
-                React.createElement(semantic_ui_react_1.Comment.Content, null,
-                    React.createElement(semantic_ui_react_1.Comment.Author, null, this.state.content.writer.name),
-                    React.createElement(semantic_ui_react_1.Comment.Metadata, null, dateVal),
-                    React.createElement(semantic_ui_react_1.Comment.Text, null, this.state.content.body)))));
-    }
-    componentDidMount() {
-        console.log(this.props.keyVal);
-        this.fetchContent(this.props.keyVal);
-    }
-}
-exports.AnnounceForm = AnnounceForm;
-
-
-/***/ }),
-
-/***/ "./components/announce/AnnounceList.tsx":
-/*!**********************************************!*\
-  !*** ./components/announce/AnnounceList.tsx ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.AnnounceList = void 0;
-const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
-const react_router_dom_1 = __webpack_require__(/*! react-router-dom */ "../node_modules/react-router-dom/esm/react-router-dom.js");
-const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "../node_modules/semantic-ui-react/dist/es/index.js");
-const client_1 = __webpack_require__(/*! ./client */ "./components/announce/client.ts");
-function clamp(x, min, max) {
-    return Math.max(Math.min(x, max), min);
-}
-function cap_str_length(str, len) {
-    if (str.length > len) {
-        return str.substr(0, len - 3) + "...";
-    }
-    else {
-        return str;
-    }
-}
-function make_clamped_sublist_of_indices(center_index, domain_list_size, sub_list_size) {
-    const result = [];
-    if (sub_list_size > domain_list_size) {
-        for (let i = 0; i < domain_list_size; ++i) {
-            result.push(i);
-        }
-        return result;
-    }
-    else {
-        let left_index = clamp(center_index, 0, domain_list_size - 1);
-        let right_index = left_index + 1;
-        while (true) {
-            if (result.length >= sub_list_size) {
-                return result;
-            }
-            if (left_index >= 0) {
-                result.unshift(left_index);
-                --left_index;
-            }
-            if (result.length >= sub_list_size) {
-                return result;
-            }
-            if (right_index < domain_list_size) {
-                result.push(right_index);
-                ++right_index;
-            }
-        }
-    }
-}
-;
-;
-class AnnounceList extends React.Component {
-    constructor(props) {
-        super(props);
-        this.fetchList = () => {
-            client_1.fetchAnnounceList()
-                .then(response => {
-                this.setState({ announceList: response.data.announcements });
-            })
-                .catch(err => {
-                console.log("fetch failed!");
-                console.log(err);
-            });
-        };
-        this.state = {
-            announceList: [],
-            listPageSize: 6,
-            listCurrentPage: 0,
-            paginatorShowCount: 3,
-        };
-    }
-    render() {
-        const tableRows = this.buildElement_rowList();
-        const paginatorBtnList = this.buildElement_paginator();
-        return (React.createElement("div", null,
-            React.createElement("h1", null, "\uACF5\uC9C0 \uC0AC\uD56D"),
-            React.createElement(semantic_ui_react_1.Table, { striped: true },
-                React.createElement(semantic_ui_react_1.Table.Header, null,
-                    React.createElement(semantic_ui_react_1.Table.Row, null,
-                        React.createElement(semantic_ui_react_1.Table.HeaderCell, { colSpan: '3' },
-                            React.createElement(semantic_ui_react_1.Menu, { floated: 'right', pagination: true },
-                                React.createElement(semantic_ui_react_1.Menu.Item, { icon: true, as: 'a', name: `page_btn_left`, onClick: () => this.setCurrentListPage(this.state.listCurrentPage - 1) },
-                                    React.createElement(semantic_ui_react_1.Icon, { name: 'chevron left' })),
-                                paginatorBtnList,
-                                React.createElement(semantic_ui_react_1.Menu.Item, { icon: true, as: 'a', name: `page_btn_left`, onClick: () => this.setCurrentListPage(this.state.listCurrentPage + 1) },
-                                    React.createElement(semantic_ui_react_1.Icon, { name: 'chevron right' })))))),
-                React.createElement(semantic_ui_react_1.Table.Header, null,
-                    React.createElement(semantic_ui_react_1.Table.Row, null,
-                        React.createElement(semantic_ui_react_1.Table.HeaderCell, null, "\uC81C\uBAA9"),
-                        React.createElement(semantic_ui_react_1.Table.HeaderCell, null, "\uAE00\uC4F4\uC774"),
-                        React.createElement(semantic_ui_react_1.Table.HeaderCell, null, "\uB0A0\uC9DC"))),
-                React.createElement(semantic_ui_react_1.Table.Body, null, tableRows)),
-            React.createElement(semantic_ui_react_1.Grid, null,
-                React.createElement(semantic_ui_react_1.Grid.Row, null,
-                    React.createElement(semantic_ui_react_1.Grid.Column, { width: 12 },
-                        React.createElement(semantic_ui_react_1.Form, null,
-                            React.createElement(semantic_ui_react_1.Form.Group, { widths: 'equal' },
-                                React.createElement(semantic_ui_react_1.Form.Field, null,
-                                    React.createElement("input", { placeholder: "\uAC80\uC0C9\uC5B4" })),
-                                React.createElement(semantic_ui_react_1.Form.Button, { content: "\uAC80\uC0C9", attached: "right" })))),
-                    React.createElement(semantic_ui_react_1.Grid.Column, { width: 4, textAlign: "right" },
-                        React.createElement(semantic_ui_react_1.Button, { key: "post", as: react_router_dom_1.Link, to: '/announcements/post' }, "\uAE00\uC4F0\uAE30"))))));
-    }
-    componentDidMount() {
-        this.fetchList();
-        this.state.announceList.forEach(element => {
-            console.log("writer: ", element.writer);
-        });
-    }
-    calcTotalPagesCount() {
-        return Math.ceil(this.state.announceList.length / this.state.listPageSize);
-    }
-    setCurrentListPage(pageIndex) {
-        const totalPagesCount = this.calcTotalPagesCount();
-        if (pageIndex >= totalPagesCount) {
-            pageIndex = totalPagesCount - 1;
-        }
-        else if (pageIndex < 0) {
-            pageIndex = 0;
-        }
-        this.setState({
-            listCurrentPage: pageIndex,
-        });
-    }
-    buildElement_rowList() {
-        const tableRows = [];
-        const begin_index = this.state.listPageSize * this.state.listCurrentPage;
-        const end_index = this.state.listPageSize * (this.state.listCurrentPage + 1);
-        for (let i = begin_index; i < end_index; ++i) {
-            const one_element = this.state.announceList[this.state.announceList.length - i - 1];
-            if (undefined === one_element) {
-                continue;
-            }
-            tableRows.push(React.createElement(semantic_ui_react_1.Table.Row, { key: `announce_row_${one_element.id}` },
-                React.createElement(semantic_ui_react_1.Table.Cell, { width: 7 },
-                    React.createElement(semantic_ui_react_1.Label, { key: one_element.id, as: react_router_dom_1.NavLink, to: `/announcements/page/${one_element.id}` }, cap_str_length(one_element.title, 128))),
-                React.createElement(semantic_ui_react_1.Table.Cell, { width: 2 }, one_element.writer.name),
-                React.createElement(semantic_ui_react_1.Table.Cell, { width: 2 }, one_element.date)));
-        }
-        return tableRows;
-    }
-    buildElement_paginator() {
-        const paginatorBtnList = [];
-        const totalPagesCount = this.calcTotalPagesCount();
-        const displayIndices = make_clamped_sublist_of_indices(this.state.listCurrentPage, totalPagesCount, this.state.paginatorShowCount);
-        for (let i of displayIndices) {
-            paginatorBtnList.push(React.createElement(semantic_ui_react_1.Menu.Item, { as: 'a', key: `paginator_btn_${i}`, name: `page_btn_${i}`, active: this.state.listCurrentPage === i, onClick: () => this.setCurrentListPage(i) }, i + 1));
-        }
-        return paginatorBtnList;
-    }
-}
-exports.AnnounceList = AnnounceList;
-
-
-/***/ }),
-
-/***/ "./components/announce/AnnouncePage.tsx":
-/*!**********************************************!*\
-  !*** ./components/announce/AnnouncePage.tsx ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.AnnouncePage = void 0;
-const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
-const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "../node_modules/semantic-ui-react/dist/es/index.js");
-const client_1 = __webpack_require__(/*! ./client */ "./components/announce/client.ts");
-const AnnounceForm_1 = __webpack_require__(/*! ./AnnounceForm */ "./components/announce/AnnounceForm.tsx");
-class AnnouncePage extends React.Component {
-    constructor(props) {
-        super(props);
-        this.deleteContent = () => {
-            const { key } = this.props.match.params;
-            client_1.deleteAnnouncement(key)
-                .then(response => {
-                this.setState({ content: null });
-            })
-                .catch(err => {
-                console.log("delete failed!");
-                console.log(err);
-            });
-        };
-    }
-    render() {
-        const { key } = this.props.match.params;
-        console.log("key: ", key);
-        return (React.createElement("div", null,
-            React.createElement("h1", null, "\uACF5\uC9C0\uC0AC\uD56D"),
-            React.createElement(AnnounceForm_1.AnnounceForm, { keyVal: key }),
-            React.createElement(semantic_ui_react_1.Button, { onClick: this.deleteContent }, "\uC0AD\uC81C")));
-    }
-}
-exports.AnnouncePage = AnnouncePage;
-
-
-/***/ }),
-
-/***/ "./components/announce/PostPage.tsx":
-/*!******************************************!*\
-  !*** ./components/announce/PostPage.tsx ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.PostForm = void 0;
-const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
-const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "../node_modules/semantic-ui-react/dist/es/index.js");
-const react_textarea_autosize_1 = __webpack_require__(/*! react-textarea-autosize */ "../node_modules/react-textarea-autosize/dist/react-textarea-autosize.browser.esm.js");
-const client_1 = __webpack_require__(/*! ./client */ "./components/announce/client.ts");
-const login_1 = __webpack_require__(/*! ../login */ "./components/login/index.ts");
-class PostForm extends React.Component {
-    constructor(props) {
-        super(props);
-        this.render = () => React.createElement("div", null,
-            React.createElement("h1", null, "\uACF5\uC9C0\uC0AC\uD56D - \uAE00\uC4F0\uAE30"),
-            React.createElement(semantic_ui_react_1.Segment, { basic: true, textAlign: 'center' },
-                React.createElement(semantic_ui_react_1.Form, { onSubmit: this.PostContents },
-                    React.createElement(semantic_ui_react_1.TextArea, { rows: 1, placeholder: '\uC81C\uBAA9', value: this.state.title, onChange: this.handleNameChange }),
-                    React.createElement(semantic_ui_react_1.Form.Field, null,
-                        React.createElement(react_textarea_autosize_1.default, { placeholder: '\uB0B4\uC6A9\uC744 \uC785\uB825\uD558\uC138\uC694', value: this.state.body, onChange: this.handleBodyChange })),
-                    React.createElement(semantic_ui_react_1.Button, { primary: true, type: 'submit' }, "\uD655\uC778"))));
-        this.state = {
-            title: '',
-            body: '',
-            attachments: [],
-            account: null
-        };
-        this.handleNameChange = this.handleNameChange.bind(this);
-        this.handleBodyChange = this.handleBodyChange.bind(this);
-        this.PostContents = this.PostContents.bind(this);
-    }
-    handleNameChange(event) {
-        event.preventDefault();
-        this.setState({ title: event.currentTarget.value });
-    }
-    handleBodyChange(event) {
-        event.preventDefault();
-        this.setState({ body: event.currentTarget.value });
-    }
-    PostContents(event) {
-        event.preventDefault();
-        const payload = {
-            title: this.state.title,
-            writer: {
-                name: this.state.account.name,
-                id: login_1.auth.currentUser.uid,
-            },
-            body: this.state.body,
-        };
-        client_1.postAnnouncement(payload).then(() => {
-            this.setState({
-                title: '',
-                body: ''
-            });
-        }).catch(err => {
-            console.log("post failed!");
-            console.log(err);
-        });
-    }
-    componentDidMount() {
-        login_1.auth.onAuthStateChanged(user => {
-            if (user) {
-                this.fetchAccount(user.uid);
-            }
-        });
-    }
-    fetchAccount(key) {
-        login_1.fetchAccount(key).then(result => {
-            this.setState({ account: result.data.account });
-        }).catch(err => {
-            console.log(err);
-        });
-    }
-}
-exports.PostForm = PostForm;
-
-
-/***/ }),
-
-/***/ "./components/announce/client.ts":
-/*!***************************************!*\
-  !*** ./components/announce/client.ts ***!
-  \***************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAnnouncement = exports.fetchAnnounceContent = exports.postAnnouncement = exports.fetchAnnounceList = void 0;
-const clientConfig_1 = __webpack_require__(/*! ../clientConfig */ "./components/clientConfig.ts");
-const fetchAnnounceList = (params = {}, cancelToken = null) => {
+exports.deleteNotice = exports.fetchNotice = exports.postNotice = exports.fetchNoticeList = void 0;
+const clientConfig_1 = __webpack_require__(/*! ../clientConfig */ "./Context/clientConfig.ts");
+const fetchNoticeList = (params = {}, cancelToken = null) => {
     return clientConfig_1.instance.get(`/announcements`, {
         params,
         cancelToken
     });
 };
-exports.fetchAnnounceList = fetchAnnounceList;
-const postAnnouncement = (payload, cancelToken = null) => {
+exports.fetchNoticeList = fetchNoticeList;
+const postNotice = (payload, cancelToken = null) => {
     return clientConfig_1.instance.post(`./announcements`, payload, {
         cancelToken
     });
 };
-exports.postAnnouncement = postAnnouncement;
-const fetchAnnounceContent = (key, params = {}, cancelToken = null) => {
+exports.postNotice = postNotice;
+const fetchNotice = (key, params = {}, cancelToken = null) => {
     return clientConfig_1.instance.get(`/announcements/${key}`, {
         params,
         cancelToken
     });
 };
-exports.fetchAnnounceContent = fetchAnnounceContent;
-const deleteAnnouncement = (key, cancelToken = null) => {
+exports.fetchNotice = fetchNotice;
+const deleteNotice = (key, cancelToken = null) => {
     return clientConfig_1.instance.delete(`/announcements/${key}`, {
         cancelToken
     });
 };
-exports.deleteAnnouncement = deleteAnnouncement;
+exports.deleteNotice = deleteNotice;
 
 
 /***/ }),
 
-/***/ "./components/announce/index.ts":
-/*!**************************************!*\
-  !*** ./components/announce/index.ts ***!
-  \**************************************/
+/***/ "./Context/Notice/index.tsx":
+/*!**********************************!*\
+  !*** ./Context/Notice/index.tsx ***!
+  \**********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-__exportStar(__webpack_require__(/*! ./AnnounceList */ "./components/announce/AnnounceList.tsx"), exports);
-__exportStar(__webpack_require__(/*! ./AnnounceForm */ "./components/announce/AnnounceForm.tsx"), exports);
-__exportStar(__webpack_require__(/*! ./PostPage */ "./components/announce/PostPage.tsx"), exports);
-__exportStar(__webpack_require__(/*! ./AnnouncePage */ "./components/announce/AnnouncePage.tsx"), exports);
+exports.NoticeContextProvider = exports.NoticeContext = void 0;
+const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
+const Client = __webpack_require__(/*! ./client */ "./Context/Notice/client.ts");
+const defaultContext = {
+    isLoading: false,
+    list: undefined,
+    content: undefined,
+    fetchList: () => { },
+    fetchContent: (key) => { },
+    postContent: (payload) => new Promise((resolve, reject) => { }),
+    deleteContent: (key) => { },
+};
+const NoticeContext = React.createContext(defaultContext);
+exports.NoticeContext = NoticeContext;
+const NoticeContextProvider = ({ children }) => {
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [list, setList] = React.useState(undefined);
+    const [content, setContent] = React.useState(undefined);
+    const fetchList = () => {
+        setIsLoading(false);
+        Client.fetchNoticeList().then(response => {
+            console.log(response.data);
+            setList(response.data.announcements);
+            setIsLoading(true);
+        }).catch(err => {
+            console.log(err);
+        });
+    };
+    const fetchContent = (key) => {
+        setIsLoading(false);
+        Client.fetchNotice(key).then(response => {
+            setContent(response.data.content);
+            setIsLoading(true);
+        }).catch(err => {
+            console.log(err);
+        });
+    };
+    const postContent = (payload) => {
+        const response = new Promise((resolve, reject) => {
+            Client.postNotice(payload).then(result => {
+                resolve(result.data.result);
+            }).catch(err => {
+                reject(err);
+            });
+        });
+        return response;
+    };
+    const deleteContent = (key) => {
+        Client.deleteNotice(key);
+    };
+    React.useEffect(() => {
+        fetchList();
+    }, []);
+    return (React.createElement(NoticeContext.Provider, { value: {
+            isLoading,
+            list,
+            content,
+            fetchList,
+            fetchContent,
+            postContent,
+            deleteContent,
+        } }, children));
+};
+exports.NoticeContextProvider = NoticeContextProvider;
 
 
 /***/ }),
 
-/***/ "./components/clientConfig.ts":
+/***/ "./Context/Schedule/client.ts":
 /*!************************************!*\
-  !*** ./components/clientConfig.ts ***!
+  !*** ./Context/Schedule/client.ts ***!
   \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteStudentOfSchedule = exports.cancelScheduleOfAccount = exports.fetchSchedulefromAccount = exports.fetchStudentsList = exports.fetchScheduleList = exports.postStudentToList = exports.postScheduletoAccount = void 0;
+const clientConfig_1 = __webpack_require__(/*! ../clientConfig */ "./Context/clientConfig.ts");
+const postStudentToList = (date, part, payload, cancelToken = null) => {
+    return clientConfig_1.instance.post(`/schedule/${date}/${part}`, payload, {
+        cancelToken
+    });
+};
+exports.postStudentToList = postStudentToList;
+const postScheduletoAccount = (key, payload, params = {}, cancelToken = null) => {
+    return clientConfig_1.instance.post(`/accounts/${key}/schedule`, payload, {
+        params,
+        cancelToken
+    });
+};
+exports.postScheduletoAccount = postScheduletoAccount;
+const fetchScheduleList = (params = {}, cancelToken = null) => {
+    return clientConfig_1.instance.get(`/schedule`, {
+        params,
+        cancelToken
+    });
+};
+exports.fetchScheduleList = fetchScheduleList;
+const fetchStudentsList = (date, part, params = {}, cancelToken = null) => {
+    return clientConfig_1.instance.get(`/schedule/${date}/${part}`, {
+        params,
+        cancelToken
+    });
+};
+exports.fetchStudentsList = fetchStudentsList;
+const fetchSchedulefromAccount = (key, params = {}, cancelToken = null) => {
+    return clientConfig_1.instance.get(`/accounts/${key}/schedule`, {
+        params,
+        cancelToken
+    });
+};
+exports.fetchSchedulefromAccount = fetchSchedulefromAccount;
+const cancelScheduleOfAccount = (key, id, cancelToken = null) => {
+    return clientConfig_1.instance.delete(`/accounts/${key}/schedule/${id}`, {
+        cancelToken
+    });
+};
+exports.cancelScheduleOfAccount = cancelScheduleOfAccount;
+const deleteStudentOfSchedule = (date, part, key, cancelToken = null) => {
+    return clientConfig_1.instance.delete(`schedule/${date}/${part}/${key}`, {
+        cancelToken
+    });
+};
+exports.deleteStudentOfSchedule = deleteStudentOfSchedule;
+
+
+/***/ }),
+
+/***/ "./Context/Schedule/index.tsx":
+/*!************************************!*\
+  !*** ./Context/Schedule/index.tsx ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ScheduleContextProvider = exports.ScheduleContext = void 0;
+const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
+const Client = __webpack_require__(/*! ./client */ "./Context/Schedule/client.ts");
+const User_1 = __webpack_require__(/*! ../User */ "./Context/User/index.tsx");
+const defaultContext = {
+    isLoading: false,
+    scheduleList: undefined,
+    fetchScheduleList: () => { },
+    postSchedule: () => { },
+    cancelSchedule: () => { },
+};
+const ScheduleContext = React.createContext(defaultContext);
+exports.ScheduleContext = ScheduleContext;
+const ScheduleContextProvider = ({ children }) => {
+    const { user } = React.useContext(User_1.UserContext);
+    const [scheduleList, setScheduleList] = React.useState(undefined);
+    const [isLoading, setIsLoading] = React.useState(false);
+    const fetchScheduleList = () => {
+        Client.fetchSchedulefromAccount(user.id).then(response => {
+            if (response.data.schedule) {
+                console.log(response.data.schedule);
+                setScheduleList(response.data.schedule);
+            }
+            setIsLoading(true);
+        }).catch(err => {
+            console.log(err);
+        });
+    };
+    const postSchedule = (time) => {
+        Client.postScheduletoAccount(user.id, time).then(result => {
+            if (result.data.result === "already exist") {
+                alert("이미 신청되어 있습니다.");
+            }
+            else {
+                let payload = {
+                    key: user.id,
+                    name: user.name,
+                };
+                Client.postStudentToList(time.date, time.part, payload).then(response => {
+                    alert("신청되었습니다.");
+                }).catch(err => {
+                    console.log(err.response.data);
+                });
+            }
+        });
+    };
+    const cancelSchedule = (id, time) => {
+        Client.cancelScheduleOfAccount(user.id, id);
+        Client.deleteStudentOfSchedule(time.date, time.part, user.id);
+        fetchScheduleList();
+    };
+    React.useEffect(() => {
+        if (user !== undefined) {
+            console.log('user loaded!');
+            fetchScheduleList();
+        }
+    }, [user]);
+    console.log(scheduleList);
+    return (React.createElement(ScheduleContext.Provider, { value: {
+            isLoading,
+            scheduleList,
+            fetchScheduleList,
+            postSchedule,
+            cancelSchedule,
+        } }, children));
+};
+exports.ScheduleContextProvider = ScheduleContextProvider;
+
+
+/***/ }),
+
+/***/ "./Context/User/client.ts":
+/*!********************************!*\
+  !*** ./Context/User/client.ts ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteAccount = exports.fetchAccount = exports.postAccount = exports.fetchAccountList = void 0;
+const clientConfig_1 = __webpack_require__(/*! ../clientConfig */ "./Context/clientConfig.ts");
+const fetchAccountList = (params = {}, cancelToken = null) => {
+    return clientConfig_1.instance.get(`/accounts`, {
+        params,
+        cancelToken
+    });
+};
+exports.fetchAccountList = fetchAccountList;
+const postAccount = (payload, cancelToken = null) => {
+    return clientConfig_1.instance.post(`/accounts`, payload, {
+        cancelToken
+    });
+};
+exports.postAccount = postAccount;
+const fetchAccount = (key, params = {}, cancelToken = null) => {
+    return clientConfig_1.instance.get(`/accounts/${key}`, {
+        params,
+        cancelToken
+    });
+};
+exports.fetchAccount = fetchAccount;
+const deleteAccount = (key, cancelToken = null) => {
+    return clientConfig_1.instance.delete(`/accounts/${key}`, {
+        cancelToken
+    });
+};
+exports.deleteAccount = deleteAccount;
+
+
+/***/ }),
+
+/***/ "./Context/User/firebaseConfig.tsx":
+/*!*****************************************!*\
+  !*** ./Context/User/firebaseConfig.tsx ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.local = exports.session = exports.provider = exports.auth = exports.firebaseApp = void 0;
+const app_1 = __webpack_require__(/*! firebase/app */ "../node_modules/firebase/app/dist/index.esm.js");
+__webpack_require__(/*! firebase/auth */ "../node_modules/firebase/auth/dist/index.esm.js");
+var firebaseConfig = {
+    apiKey: "AIzaSyAlkvWxkFIyhX05nq4LpfnZdQBHiuAxQ70",
+    authDomain: "jejudo-drone-prototype.firebaseapp.com",
+    databaseURL: "https://jejudo-drone-prototype-default-rtdb.firebaseio.com",
+    projectId: "jejudo-drone-prototype",
+    storageBucket: "jejudo-drone-prototype.appspot.com",
+    messagingSenderId: "675146639727",
+    appId: "1:675146639727:web:fcf5f88a73d6b682b3209a",
+    measurementId: "G-SJ40N3VG8Q"
+};
+const firebaseApp = app_1.default.initializeApp(firebaseConfig);
+exports.firebaseApp = firebaseApp;
+const auth = app_1.default.auth();
+exports.auth = auth;
+const session = app_1.default.auth.Auth.Persistence.SESSION;
+exports.session = session;
+const local = app_1.default.auth.Auth.Persistence.LOCAL;
+exports.local = local;
+const provider = new app_1.default.auth.GoogleAuthProvider();
+exports.provider = provider;
+
+
+/***/ }),
+
+/***/ "./Context/User/index.tsx":
+/*!********************************!*\
+  !*** ./Context/User/index.tsx ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserContextProvider = exports.UserContext = void 0;
+const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
+const firebaseConfig_1 = __webpack_require__(/*! ./firebaseConfig */ "./Context/User/firebaseConfig.tsx");
+const Client = __webpack_require__(/*! ./client */ "./Context/User/client.ts");
+const defaultContext = {
+    isLoading: false,
+    user: undefined,
+    login: (email, password) => { },
+    createUser: (user) => { },
+    fetchUser: (uid) => { },
+    logout: () => { },
+    deleteUser: () => { },
+};
+const UserContext = React.createContext(defaultContext);
+exports.UserContext = UserContext;
+const UserContextProvider = ({ children }) => {
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [user, setUser] = React.useState(undefined);
+    const login = (email, password) => {
+        firebaseConfig_1.auth.setPersistence(firebaseConfig_1.session).then(() => {
+            return firebaseConfig_1.auth.signInWithEmailAndPassword(email, password).then(result => {
+                Client.fetchAccount(result.user.uid).then(response => {
+                    setUser(response.data.account);
+                    setIsLoading(true);
+                });
+            });
+        });
+    };
+    const fetchUser = (uid) => {
+        setIsLoading(false);
+        Client.fetchAccount(uid).then(response => {
+            setUser(response.data.account);
+            setIsLoading(true);
+        }).catch(err => {
+            console.log(err);
+            setUser(undefined);
+            setIsLoading(true);
+        });
+    };
+    const createUser = (user) => {
+        Client.postAccount(user).then(response => {
+            setUser(user);
+            setIsLoading(true);
+        });
+    };
+    const logout = () => {
+        firebaseConfig_1.auth.signOut();
+        setUser(undefined);
+    };
+    const deleteUser = () => {
+    };
+    React.useEffect(() => {
+        firebaseConfig_1.auth.onAuthStateChanged(user => {
+            if (user) {
+                fetchUser(user.uid);
+            }
+        });
+    }, []);
+    return (React.createElement(UserContext.Provider, { value: {
+            isLoading,
+            user,
+            login,
+            fetchUser,
+            createUser,
+            logout,
+            deleteUser,
+        } }, children));
+};
+exports.UserContextProvider = UserContextProvider;
+
+
+/***/ }),
+
+/***/ "./Context/Weather/client/index.ts":
+/*!*****************************************!*\
+  !*** ./Context/Weather/client/index.ts ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.fetchWeather = void 0;
+const weather_key = 'jD8WKBFaFy1n7Cbc435XbqP3H9dsN991K7X1M71E4iR1h3uuxaNGjYTZ%2BAg%2BfROO8qTrnPYq%2FIS0c3vSdenp8g%3D%3D';
+const jejudo_drone_pos = {
+    nx: 51,
+    ny: 32,
+};
+const fetchWeather = () => __awaiter(void 0, void 0, void 0, function* () {
+    let service = {
+        ultraN: 'getUltraSrtNcst',
+        ultraF: 'getUltraSrtFcst',
+        vilage: 'getVilageFcst',
+    };
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1;
+    var yyyy = today.getFullYear();
+    var hours = today.getHours();
+    var minutes = today.getMinutes();
+    console.log("time " + minutes);
+    if (minutes < 40) {
+        hours = hours - 1;
+        if (hours < 0) {
+            today.setDate(today.getDate() - 1);
+            dd = today.getDate();
+            mm = today.getMonth() + 1;
+            yyyy = today.getFullYear();
+            hours = 23;
+        }
+    }
+    let yStr = yyyy.toString();
+    let hStr, mStr, dStr;
+    if (hours < 10) {
+        hStr = '0' + hours;
+    }
+    else {
+        hStr = hours.toString();
+    }
+    if (mm < 10) {
+        mStr = '0' + mm;
+    }
+    else {
+        mStr = mm.toString();
+    }
+    if (dd < 10) {
+        dStr = '0' + dd;
+    }
+    else {
+        dStr = dd.toString();
+    }
+    let weather_url = `http://apis.data.go.kr/1360000/VilageFcstInfoService/${service.ultraN}?serviceKey=${weather_key}&dataType=JSON&numOfRows=10&pageNo=1&base_date=${yStr}${mStr}${dStr}&base_time=${hStr}00&nx=${jejudo_drone_pos.nx}&ny=${jejudo_drone_pos.ny}`;
+    fetch(weather_url, {
+        mode: 'no-cors'
+    }).then(response => {
+        console.log('weather : ', response);
+    });
+    let response = yield fetch(weather_url, {
+        mode: 'no-cors',
+    });
+    console.log(response);
+    let data = yield response.json();
+    console.log(data);
+    let itemList = data.response.body.items.item;
+    console.log(itemList);
+    let t1h, rn1, uuu, vvv, reh, pty, vec, wsd;
+    itemList.forEach(element => {
+        switch (element.category) {
+            case "T1H":
+                t1h = element.obsrValue;
+                break;
+            case "RN1":
+                rn1 = element.obsrValue;
+                break;
+            case "UUU":
+                uuu = element.obsrValue;
+                break;
+            case "VVV":
+                vvv = element.obsrValue;
+                break;
+            case "REH":
+                reh = element.obsrValue;
+                break;
+            case "PTY":
+                pty = element.obsrValue;
+                break;
+            case "VEC":
+                vec = element.obsrValue;
+                break;
+            case "WSD":
+                wsd = element.obsrValue;
+                break;
+        }
+    });
+    let result = {
+        T1H: t1h,
+        RN1: rn1,
+        UUU: uuu,
+        VVV: vvv,
+        REH: reh,
+        PTY: pty,
+        VEC: vec,
+        WSD: wsd,
+    };
+    return result;
+});
+exports.fetchWeather = fetchWeather;
+
+
+/***/ }),
+
+/***/ "./Context/Weather/index.tsx":
+/*!***********************************!*\
+  !*** ./Context/Weather/index.tsx ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.WeatherContextProvider = exports.WeatherContext = void 0;
+const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
+const Client = __webpack_require__(/*! ./client */ "./Context/Weather/client/index.ts");
+const defaultContext = {
+    isLoading: false,
+    weather: undefined,
+    fetchWeather: () => { },
+    refresh: () => { },
+};
+const WeatherContext = React.createContext(defaultContext);
+exports.WeatherContext = WeatherContext;
+const WeatherContextProvider = ({ children }) => {
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [weather, setWeather] = React.useState(undefined);
+    const fetchWeather = () => {
+        setIsLoading(false);
+        Client.fetchWeather().then(response => {
+            setWeather(response);
+            setIsLoading(true);
+        });
+    };
+    const refresh = () => {
+        fetchWeather();
+    };
+    React.useEffect(() => {
+        fetchWeather();
+    }, []);
+    console.log(weather);
+    return (React.createElement(WeatherContext.Provider, { value: {
+            isLoading,
+            weather,
+            fetchWeather,
+            refresh,
+        } }, children));
+};
+exports.WeatherContextProvider = WeatherContextProvider;
+
+
+/***/ }),
+
+/***/ "./Context/clientConfig.ts":
+/*!*********************************!*\
+  !*** ./Context/clientConfig.ts ***!
+  \*********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -88193,10 +88288,220 @@ exports.instance = instance;
 
 /***/ }),
 
-/***/ "./components/login/account.tsx":
-/*!**************************************!*\
-  !*** ./components/login/account.tsx ***!
-  \**************************************/
+/***/ "./Context/index.ts":
+/*!**************************!*\
+  !*** ./Context/index.ts ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+__exportStar(__webpack_require__(/*! ./User */ "./Context/User/index.tsx"), exports);
+__exportStar(__webpack_require__(/*! ./Notice */ "./Context/Notice/index.tsx"), exports);
+__exportStar(__webpack_require__(/*! ./Schedule */ "./Context/Schedule/index.tsx"), exports);
+__exportStar(__webpack_require__(/*! ./Weather */ "./Context/Weather/index.tsx"), exports);
+
+
+/***/ }),
+
+/***/ "./Routes.tsx":
+/*!********************!*\
+  !*** ./Routes.tsx ***!
+  \********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
+const react_dom_1 = __webpack_require__(/*! react-dom */ "../node_modules/react-dom/index.js");
+const react_router_dom_1 = __webpack_require__(/*! react-router-dom */ "../node_modules/react-router-dom/esm/react-router-dom.js");
+const MainMenu_1 = __webpack_require__(/*! ./components/MainMenu */ "./components/MainMenu.tsx");
+const SwitchBox_1 = __webpack_require__(/*! ./components/SwitchBox */ "./components/SwitchBox.tsx");
+const Context = __webpack_require__(/*! ./Context */ "./Context/index.ts");
+const routes = React.createElement(Context.UserContextProvider, null,
+    React.createElement(Context.NoticeContextProvider, null,
+        React.createElement(Context.ScheduleContextProvider, null,
+            React.createElement(Context.WeatherContextProvider, null,
+                React.createElement(react_router_dom_1.BrowserRouter, null,
+                    React.createElement("div", { id: 'wrapper' },
+                        React.createElement(MainMenu_1.MainMenu, null),
+                        React.createElement("main", { style: {
+                                margin: '1rem 0 1rem 16rem'
+                            } },
+                            React.createElement(SwitchBox_1.default, null))))))));
+react_dom_1.render(routes, document.getElementById('app'));
+
+
+/***/ }),
+
+/***/ "./components/MainMenu.tsx":
+/*!*********************************!*\
+  !*** ./components/MainMenu.tsx ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MainMenu = void 0;
+const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
+const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "../node_modules/semantic-ui-react/dist/es/index.js");
+const react_router_dom_1 = __webpack_require__(/*! react-router-dom */ "../node_modules/react-router-dom/esm/react-router-dom.js");
+const Context_1 = __webpack_require__(/*! ../Context */ "./Context/index.ts");
+const MainMenu = () => {
+    const [lesson, setLesson] = React.useState(false);
+    const { user } = React.useContext(Context_1.UserContext);
+    const OpenOrCloseLessonMenu = () => {
+        if (!lesson) {
+            setLesson(true);
+            document.getElementById("lesson").style.display = "block";
+        }
+        else {
+            setLesson(false);
+            document.getElementById("lesson").style.display = "none";
+        }
+    };
+    const lessonMenu = [
+        'reservation',
+        'my schedule',
+        'list'
+    ];
+    const lessonMenu_kr = new Map([
+        ['reservation', '예약'],
+        ['my schedule', '나의 수업'],
+        ['list', '명단']
+    ]);
+    return (React.createElement(semantic_ui_react_1.Menu, { inverted: true, vertical: true, fixed: 'left' },
+        React.createElement(semantic_ui_react_1.Menu.Item, { as: react_router_dom_1.Link, to: '/' },
+            "Home",
+            React.createElement(semantic_ui_react_1.Icon, { name: 'home' })),
+        React.createElement(semantic_ui_react_1.Menu.Item, null,
+            "Menu",
+            React.createElement(semantic_ui_react_1.Icon, { name: 'list' }),
+            React.createElement(semantic_ui_react_1.Menu.Menu, null,
+                React.createElement(semantic_ui_react_1.Menu.Item, { key: "announcements", as: react_router_dom_1.NavLink, to: { pathname: `/announcements` } }, "\uACF5\uC9C0\uC0AC\uD56D"),
+                React.createElement(semantic_ui_react_1.Menu.Item, { onClick: OpenOrCloseLessonMenu },
+                    "\uC218\uC5C5",
+                    React.createElement("div", { id: "schedule" },
+                        React.createElement(semantic_ui_react_1.Menu.Menu, null,
+                            React.createElement(semantic_ui_react_1.Menu.Menu, null, lessonMenu.map(item => React.createElement(semantic_ui_react_1.Menu.Item, { key: item, as: react_router_dom_1.NavLink, to: { pathname: `/schedule/${item}` } }, lessonMenu_kr.get(item)))))))))));
+};
+exports.MainMenu = MainMenu;
+
+
+/***/ }),
+
+/***/ "./components/SwitchBox.tsx":
+/*!**********************************!*\
+  !*** ./components/SwitchBox.tsx ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
+const react_router_1 = __webpack_require__(/*! react-router */ "../node_modules/react-router/esm/react-router.js");
+const react_router_dom_1 = __webpack_require__(/*! react-router-dom */ "../node_modules/react-router-dom/esm/react-router-dom.js");
+const announce_1 = __webpack_require__(/*! ./announce */ "./components/announce/index.ts");
+const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "../node_modules/semantic-ui-react/dist/es/index.js");
+const schedule_1 = __webpack_require__(/*! ./schedule */ "./components/schedule/index.ts");
+const User_1 = __webpack_require__(/*! ./User */ "./components/User/index.ts");
+const Context_1 = __webpack_require__(/*! ../Context */ "./Context/index.ts");
+const SwitchBox = () => {
+    const { user } = React.useContext(Context_1.UserContext);
+    return (React.createElement(semantic_ui_react_1.Container, null,
+        React.createElement(react_router_1.Switch, null,
+            React.createElement(react_router_dom_1.Route, { exact: true, path: '/announcements', component: announce_1.NoticeList }),
+            React.createElement(react_router_dom_1.Route, { exact: true, path: '/announcements/page/:key', component: announce_1.NoticePage }),
+            React.createElement(react_router_dom_1.Route, { exact: true, path: '/announcements/post', component: announce_1.PostPage }),
+            React.createElement(react_router_dom_1.Route, { exact: true, path: '/schedule/reservation', component: schedule_1.CalendarPage }),
+            React.createElement(react_router_dom_1.Route, { exact: true, path: '/schedule/reservation/:date', component: schedule_1.PartPage }),
+            React.createElement(react_router_dom_1.Route, { exact: true, path: '/schedule/my schedule', component: schedule_1.MyScheduleList }),
+            React.createElement(react_router_dom_1.Route, { exact: true, path: '/schedule/list', component: schedule_1.CalendarListPage }),
+            React.createElement(react_router_dom_1.Route, { exact: true, path: '/schedule/list/:date', component: schedule_1.PartListPage }),
+            React.createElement(react_router_dom_1.Route, { exact: true, path: '/login', component: User_1.LoginPage }),
+            React.createElement(react_router_dom_1.Route, { exact: true, path: '/login/create account', component: User_1.AccountPage }),
+            React.createElement(react_router_dom_1.Route, { exact: true, path: '/', render: () => React.createElement("div", null,
+                    React.createElement("h1", null, "Main Menu"),
+                    React.createElement("div", { id: "firebaseui-auth-container" },
+                        React.createElement(semantic_ui_react_1.Button, { key: 'login', as: react_router_dom_1.Link, to: '/login' }, user !== undefined ?
+                            '회원 정보' :
+                            'log in'))) }))));
+};
+exports.default = SwitchBox;
+
+
+/***/ }),
+
+/***/ "./components/User/LoginPage.tsx":
+/*!***************************************!*\
+  !*** ./components/User/LoginPage.tsx ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.LoginPage = void 0;
+const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
+const react_router_dom_1 = __webpack_require__(/*! react-router-dom */ "../node_modules/react-router-dom/esm/react-router-dom.js");
+const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "../node_modules/semantic-ui-react/dist/es/index.js");
+const Context_1 = __webpack_require__(/*! ../../Context */ "./Context/index.ts");
+const LoginPage = () => {
+    const { user, login, logout } = React.useContext(Context_1.UserContext);
+    const signIn = () => {
+        let _id = document.getElementById('user_email').value;
+        let _pw = document.getElementById('user_pw').value;
+        login(_id, _pw);
+    };
+    return (React.createElement("div", { className: "LogIn" },
+        React.createElement("header", null,
+            user !== undefined
+                ? React.createElement("p", null,
+                    "Hello, ",
+                    user.name)
+                : React.createElement("p", null, "Please sign in."),
+            user !== undefined
+                ? React.createElement("button", { onClick: logout }, "Sign out")
+                : React.createElement(React.Fragment, null)),
+        user !== undefined
+            ? React.createElement(React.Fragment, null)
+            :
+                React.createElement("div", null,
+                    React.createElement(semantic_ui_react_1.Container, null,
+                        React.createElement("input", { id: 'user_email' }),
+                        React.createElement("input", { id: 'user_pw' }),
+                        React.createElement(semantic_ui_react_1.Button, { as: react_router_dom_1.Link, to: '/', onClick: signIn }, "\uB85C\uADF8\uC778")),
+                    React.createElement(semantic_ui_react_1.Container, null,
+                        React.createElement(semantic_ui_react_1.Button, { as: react_router_dom_1.Link, to: '/login/create account' }, "\uD68C\uC6D0\uAC00\uC785")))));
+};
+exports.LoginPage = LoginPage;
+
+
+/***/ }),
+
+/***/ "./components/User/account.tsx":
+/*!*************************************!*\
+  !*** ./components/User/account.tsx ***!
+  \*************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -88207,8 +88512,8 @@ exports.AccountPage = void 0;
 const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
 const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "../node_modules/semantic-ui-react/dist/es/index.js");
 const react_router_dom_1 = __webpack_require__(/*! react-router-dom */ "../node_modules/react-router-dom/esm/react-router-dom.js");
-const firebaseConfig_1 = __webpack_require__(/*! ./firebaseConfig */ "./components/login/firebaseConfig.tsx");
-const client_1 = __webpack_require__(/*! ./client */ "./components/login/client.ts");
+const Context_1 = __webpack_require__(/*! ../../Context */ "./Context/index.ts");
+const firebaseConfig_1 = __webpack_require__(/*! ../../Context/User/firebaseConfig */ "./Context/User/firebaseConfig.tsx");
 const INPUT_FIELD_EMAIL = "input_email";
 const INPUT_FIELD_NAME = "input_name";
 const INPUT_FIELD_PASSWD = "input_passwd";
@@ -88269,39 +88574,21 @@ class AccountPage extends React.Component {
                             alert(`Unkown value for curriculum: ${this.state.selectedDropdownCourseValue}`);
                             return;
                     }
-                    firebaseConfig_1.auth.onAuthStateChanged(user => {
-                        if (user) {
-                            this.setState({
-                                account: {
-                                    id: user.uid,
-                                    name: _name,
-                                    phoneNum: _phoneNum,
-                                    curriculum: _curriculum,
-                                }
-                            });
-                            client_1.postAccount(this.state.account).then(() => {
-                                alert('계정이 생성되었습니다.');
-                                history.push('/');
-                            });
-                        }
-                        else {
-                            const _email = this.state[INPUT_FIELD_EMAIL];
-                            const _password = this.state[INPUT_FIELD_PASSWD];
-                            firebaseConfig_1.auth.createUserWithEmailAndPassword(_email, _password).then(result => {
-                                this.setState({
-                                    account: {
-                                        id: result.user.uid,
-                                        name: _name,
-                                        phoneNum: _phoneNum,
-                                        curriculum: _curriculum,
-                                    }
-                                });
-                                client_1.postAccount(this.state.account).then(() => {
-                                    alert('계정이 생성되었습니다.');
-                                    history.push('/');
-                                });
-                            });
-                        }
+                    const _email = this.state[INPUT_FIELD_EMAIL];
+                    const _password = this.state[INPUT_FIELD_PASSWD];
+                    firebaseConfig_1.auth.createUserWithEmailAndPassword(_email, _password).then(result => {
+                        this.setState({
+                            account: {
+                                id: result.user.uid,
+                                name: _name,
+                                phoneNum: _phoneNum,
+                                curriculum: _curriculum,
+                            }
+                        });
+                        this.context.postAccount(this.state.account).then(() => {
+                            alert('계정이 생성되었습니다.');
+                            history.push('/');
+                        });
                     });
                 } }, "\uD655\uC778") });
         this.cancelButton = () => React.createElement(react_router_dom_1.Route, { render: ({ history }) => React.createElement(semantic_ui_react_1.Button, { onClick: () => {
@@ -88340,9 +88627,9 @@ class AccountPage extends React.Component {
         this.onInputChanges = this.onInputChanges.bind(this);
     }
     componentDidMount() {
-        firebaseConfig_1.auth.onAuthStateChanged(user => {
-            this.setState({ user: user });
-        });
+        if (this.context.user !== undefined) {
+            this.setState({ user: this.context.user });
+        }
     }
     onDropdownCourseChanges(event, data) {
         this.setState({ selectedDropdownCourseValue: Number(data.value) });
@@ -88354,93 +88641,15 @@ class AccountPage extends React.Component {
     }
 }
 exports.AccountPage = AccountPage;
+AccountPage.contextType = Context_1.UserContext;
 
 
 /***/ }),
 
-/***/ "./components/login/client.ts":
-/*!************************************!*\
-  !*** ./components/login/client.ts ***!
-  \************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAccount = exports.fetchAccount = exports.postAccount = exports.fetchAccountList = void 0;
-const clientConfig_1 = __webpack_require__(/*! ../clientConfig */ "./components/clientConfig.ts");
-const fetchAccountList = (params = {}, cancelToken = null) => {
-    return clientConfig_1.instance.get(`/accounts`, {
-        params,
-        cancelToken
-    });
-};
-exports.fetchAccountList = fetchAccountList;
-const postAccount = (payload, cancelToken = null) => {
-    return clientConfig_1.instance.post(`/accounts`, payload, {
-        cancelToken
-    });
-};
-exports.postAccount = postAccount;
-const fetchAccount = (key, params = {}, cancelToken = null) => {
-    return clientConfig_1.instance.get(`/accounts/${key}`, {
-        params,
-        cancelToken
-    });
-};
-exports.fetchAccount = fetchAccount;
-const deleteAccount = (key, cancelToken = null) => {
-    return clientConfig_1.instance.delete(`/accounts/${key}`, {
-        cancelToken
-    });
-};
-exports.deleteAccount = deleteAccount;
-
-
-/***/ }),
-
-/***/ "./components/login/firebaseConfig.tsx":
-/*!*********************************************!*\
-  !*** ./components/login/firebaseConfig.tsx ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.local = exports.session = exports.provider = exports.auth = exports.firebaseApp = void 0;
-const app_1 = __webpack_require__(/*! firebase/app */ "../node_modules/firebase/app/dist/index.esm.js");
-__webpack_require__(/*! firebase/auth */ "../node_modules/firebase/auth/dist/index.esm.js");
-var firebaseConfig = {
-    apiKey: "AIzaSyAlkvWxkFIyhX05nq4LpfnZdQBHiuAxQ70",
-    authDomain: "jejudo-drone-prototype.firebaseapp.com",
-    databaseURL: "https://jejudo-drone-prototype-default-rtdb.firebaseio.com",
-    projectId: "jejudo-drone-prototype",
-    storageBucket: "jejudo-drone-prototype.appspot.com",
-    messagingSenderId: "675146639727",
-    appId: "1:675146639727:web:fcf5f88a73d6b682b3209a",
-    measurementId: "G-SJ40N3VG8Q"
-};
-const firebaseApp = app_1.default.initializeApp(firebaseConfig);
-exports.firebaseApp = firebaseApp;
-const auth = app_1.default.auth();
-exports.auth = auth;
-const session = app_1.default.auth.Auth.Persistence.SESSION;
-exports.session = session;
-const local = app_1.default.auth.Auth.Persistence.LOCAL;
-exports.local = local;
-const provider = new app_1.default.auth.GoogleAuthProvider();
-exports.provider = provider;
-
-
-/***/ }),
-
-/***/ "./components/login/index.ts":
-/*!***********************************!*\
-  !*** ./components/login/index.ts ***!
-  \***********************************/
+/***/ "./components/User/index.ts":
+/*!**********************************!*\
+  !*** ./components/User/index.ts ***!
+  \**********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -88457,208 +88666,312 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-__exportStar(__webpack_require__(/*! ./firebaseConfig */ "./components/login/firebaseConfig.tsx"), exports);
-__exportStar(__webpack_require__(/*! ./login */ "./components/login/login.tsx"), exports);
-__exportStar(__webpack_require__(/*! ./account */ "./components/login/account.tsx"), exports);
-__exportStar(__webpack_require__(/*! ./client */ "./components/login/client.ts"), exports);
+__exportStar(__webpack_require__(/*! ./LoginPage */ "./components/User/LoginPage.tsx"), exports);
+__exportStar(__webpack_require__(/*! ./account */ "./components/User/account.tsx"), exports);
 
 
 /***/ }),
 
-/***/ "./components/login/login.tsx":
-/*!************************************!*\
-  !*** ./components/login/login.tsx ***!
-  \************************************/
+/***/ "./components/announce/NoticeForm.tsx":
+/*!********************************************!*\
+  !*** ./components/announce/NoticeForm.tsx ***!
+  \********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LogIn = void 0;
+const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
+const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "../node_modules/semantic-ui-react/dist/es/index.js");
+const Context_1 = __webpack_require__(/*! ../../Context */ "./Context/index.ts");
+const NoticeForm = ({ keyVal }) => {
+    const [notice, setNotice] = React.useState(undefined);
+    const { isLoading, content, fetchContent } = React.useContext(Context_1.NoticeContext);
+    const [dateVal, setDateVal] = React.useState('');
+    React.useEffect(() => {
+        if (content !== undefined) {
+            setNotice(content);
+        }
+    }, [content]);
+    React.useEffect(() => {
+        if (notice !== undefined) {
+            setDateVal(notice.date.toString());
+        }
+    }, [notice]);
+    React.useEffect(() => {
+        fetchContent(keyVal);
+    }, []);
+    if (notice === undefined) {
+        return (React.createElement(React.Fragment, null));
+    }
+    return (React.createElement(semantic_ui_react_1.Comment.Group, null,
+        React.createElement(semantic_ui_react_1.Header, { as: 'h2', dividing: true }, notice.title),
+        React.createElement(semantic_ui_react_1.Comment, null,
+            React.createElement(semantic_ui_react_1.Comment.Content, null,
+                React.createElement(semantic_ui_react_1.Comment.Author, null, notice.writer.name),
+                React.createElement(semantic_ui_react_1.Comment.Metadata, null, dateVal),
+                React.createElement(semantic_ui_react_1.Comment.Text, null, notice.body)))));
+};
+exports.default = NoticeForm;
+
+
+/***/ }),
+
+/***/ "./components/announce/NoticeList.tsx":
+/*!********************************************!*\
+  !*** ./components/announce/NoticeList.tsx ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NoticeList = void 0;
 const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
 const react_router_dom_1 = __webpack_require__(/*! react-router-dom */ "../node_modules/react-router-dom/esm/react-router-dom.js");
 const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "../node_modules/semantic-ui-react/dist/es/index.js");
-const firebaseConfig_1 = __webpack_require__(/*! ./firebaseConfig */ "./components/login/firebaseConfig.tsx");
-const client_1 = __webpack_require__(/*! ./client */ "./components/login/client.ts");
-class LogIn extends React.Component {
-    constructor(props) {
-        super(props);
-        this.SignInWithGoogle = () => React.createElement(react_router_dom_1.Route, { render: ({ history }) => (React.createElement(semantic_ui_react_1.Button, { onClick: () => {
-                    firebaseConfig_1.auth.setPersistence('session').then(() => {
-                        firebaseConfig_1.auth.signInWithPopup(firebaseConfig_1.provider).then(result => {
-                            this.setState({ user: result.user });
-                            client_1.fetchAccount(result.user.uid).then(response => {
-                                if (response.data.account) {
-                                    this.setState({ account: response.data.account });
-                                    history.push('/');
-                                }
-                                else {
-                                    alert('회원 정보가 없습니다.\n정보를 입력해 주세요.');
-                                    history.push('/login/create account');
-                                }
-                            });
-                        }).catch(err => {
-                            console.log(err);
-                        });
-                    });
-                } }, "Sign in with Google")) });
-        this.SignIn = () => React.createElement(react_router_dom_1.Route, { render: ({ history }) => (React.createElement(semantic_ui_react_1.Button, { onClick: () => {
-                    let _id = document.getElementById('user_email').value;
-                    let _pw = document.getElementById('user_pw').value;
-                    firebaseConfig_1.auth.signInWithEmailAndPassword(_id, _pw).then(result => {
-                        client_1.fetchAccount(result.user.uid).then(response => {
-                            this.setState({
-                                user: result.user,
-                                account: response.data.account,
-                            });
-                            history.push('/');
-                        });
-                    });
-                } }, "Log In")) });
-        this.SignOut = () => {
-            firebaseConfig_1.auth.signOut().then(() => {
-                this.setState({ user: firebaseConfig_1.auth.currentUser });
-            });
-            console.log(this.state.user);
+const Context_1 = __webpack_require__(/*! ../../Context */ "./Context/index.ts");
+function clamp(x, min, max) {
+    return Math.max(Math.min(x, max), min);
+}
+function cap_str_length(str, len) {
+    if (str.length > len) {
+        return str.substr(0, len - 3) + "...";
+    }
+    else {
+        return str;
+    }
+}
+function make_clamped_sublist_of_indices(center_index, domain_list_size, sub_list_size) {
+    const result = [];
+    if (sub_list_size > domain_list_size) {
+        for (let i = 0; i < domain_list_size; ++i) {
+            result.push(i);
+        }
+        return result;
+    }
+    else {
+        let left_index = clamp(center_index, 0, domain_list_size - 1);
+        let right_index = left_index + 1;
+        while (true) {
+            if (result.length >= sub_list_size) {
+                return result;
+            }
+            if (left_index >= 0) {
+                result.unshift(left_index);
+                --left_index;
+            }
+            if (result.length >= sub_list_size) {
+                return result;
+            }
+            if (right_index < domain_list_size) {
+                result.push(right_index);
+                ++right_index;
+            }
+        }
+    }
+}
+const NoticeList = () => {
+    const { list } = React.useContext(Context_1.NoticeContext);
+    const [listPageSize, setListPageSize] = React.useState(6);
+    const [listCurrentPage, setListCurrentPage] = React.useState(0);
+    const [paginatorShowCount, setPaginatorShowCount] = React.useState(3);
+    const calcTotalPagesCount = () => {
+        return Math.ceil(list.length / listPageSize);
+    };
+    const setCurrentListPage = (pageIndex) => {
+        const totalPagesCount = calcTotalPagesCount();
+        if (pageIndex >= totalPagesCount) {
+            pageIndex = totalPagesCount - 1;
+        }
+        else if (pageIndex < 0) {
+            pageIndex = 0;
+        }
+        setListCurrentPage(pageIndex);
+    };
+    const buildElement_rowList = () => {
+        const tableRows = [];
+        const begin_index = listPageSize * listCurrentPage;
+        const end_index = listPageSize * (listCurrentPage + 1);
+        for (let i = begin_index; i < end_index; ++i) {
+            const one_element = list[list.length - i - 1];
+            if (undefined === one_element) {
+                continue;
+            }
+            tableRows.push(React.createElement(semantic_ui_react_1.Table.Row, { key: `announce_row_${one_element.id}` },
+                React.createElement(semantic_ui_react_1.Table.Cell, { width: 7 },
+                    React.createElement(semantic_ui_react_1.Label, { key: one_element.id, as: react_router_dom_1.NavLink, to: `/announcements/page/${one_element.id}` }, cap_str_length(one_element.title, 128))),
+                React.createElement(semantic_ui_react_1.Table.Cell, { width: 2 }, one_element.writer.name),
+                React.createElement(semantic_ui_react_1.Table.Cell, { width: 2 }, one_element.date)));
+        }
+        return tableRows;
+    };
+    const buildElement_paginator = () => {
+        const paginatorBtnList = [];
+        const totalPagesCount = calcTotalPagesCount();
+        const displayIndices = make_clamped_sublist_of_indices(listCurrentPage, totalPagesCount, paginatorShowCount);
+        for (let i of displayIndices) {
+            paginatorBtnList.push(React.createElement(semantic_ui_react_1.Menu.Item, { as: 'a', key: `paginator_btn_${i}`, name: `page_btn_${i}`, active: listCurrentPage === i, onClick: () => setCurrentListPage(i) }, i + 1));
+        }
+        return paginatorBtnList;
+    };
+    if (list === undefined) {
+        return React.createElement(React.Fragment, null);
+    }
+    const tableRows = buildElement_rowList();
+    const paginatorBtnList = buildElement_paginator();
+    return (React.createElement("div", null,
+        React.createElement("h1", null, "\uACF5\uC9C0 \uC0AC\uD56D"),
+        React.createElement(semantic_ui_react_1.Table, { striped: true },
+            React.createElement(semantic_ui_react_1.Table.Header, null,
+                React.createElement(semantic_ui_react_1.Table.Row, null,
+                    React.createElement(semantic_ui_react_1.Table.HeaderCell, { colSpan: '3' },
+                        React.createElement(semantic_ui_react_1.Menu, { floated: 'right', pagination: true },
+                            React.createElement(semantic_ui_react_1.Menu.Item, { icon: true, as: 'a', name: `page_btn_left`, onClick: () => setCurrentListPage(listCurrentPage - 1) },
+                                React.createElement(semantic_ui_react_1.Icon, { name: 'chevron left' })),
+                            paginatorBtnList,
+                            React.createElement(semantic_ui_react_1.Menu.Item, { icon: true, as: 'a', name: `page_btn_left`, onClick: () => setCurrentListPage(listCurrentPage + 1) },
+                                React.createElement(semantic_ui_react_1.Icon, { name: 'chevron right' })))))),
+            React.createElement(semantic_ui_react_1.Table.Header, null,
+                React.createElement(semantic_ui_react_1.Table.Row, null,
+                    React.createElement(semantic_ui_react_1.Table.HeaderCell, null, "\uC81C\uBAA9"),
+                    React.createElement(semantic_ui_react_1.Table.HeaderCell, null, "\uAE00\uC4F4\uC774"),
+                    React.createElement(semantic_ui_react_1.Table.HeaderCell, null, "\uB0A0\uC9DC"))),
+            React.createElement(semantic_ui_react_1.Table.Body, null, tableRows)),
+        React.createElement(semantic_ui_react_1.Grid, null,
+            React.createElement(semantic_ui_react_1.Grid.Row, null,
+                React.createElement(semantic_ui_react_1.Grid.Column, { width: 12 },
+                    React.createElement(semantic_ui_react_1.Form, null,
+                        React.createElement(semantic_ui_react_1.Form.Group, { widths: 'equal' },
+                            React.createElement(semantic_ui_react_1.Form.Field, null,
+                                React.createElement("input", { placeholder: "\uAC80\uC0C9\uC5B4" })),
+                            React.createElement(semantic_ui_react_1.Form.Button, { content: "\uAC80\uC0C9", attached: "right" })))),
+                React.createElement(semantic_ui_react_1.Grid.Column, { width: 4, textAlign: "right" },
+                    React.createElement(semantic_ui_react_1.Button, { key: "post", as: react_router_dom_1.Link, to: '/announcements/post' }, "\uAE00\uC4F0\uAE30"))))));
+};
+exports.NoticeList = NoticeList;
+
+
+/***/ }),
+
+/***/ "./components/announce/NoticePage.tsx":
+/*!********************************************!*\
+  !*** ./components/announce/NoticePage.tsx ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NoticePage = void 0;
+const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
+const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "../node_modules/semantic-ui-react/dist/es/index.js");
+const Context_1 = __webpack_require__(/*! ../../Context */ "./Context/index.ts");
+const NoticeForm_1 = __webpack_require__(/*! ./NoticeForm */ "./components/announce/NoticeForm.tsx");
+const NoticePage = ({ match }) => {
+    const { key } = match.params;
+    const { deleteContent } = React.useContext(Context_1.NoticeContext);
+    React.useEffect(() => {
+    }, []);
+    return (React.createElement("div", null,
+        React.createElement("h1", null, "\uACF5\uC9C0\uC0AC\uD56D"),
+        React.createElement(NoticeForm_1.default, { keyVal: key }),
+        React.createElement(semantic_ui_react_1.Button, { onClick: () => deleteContent(key) }, "\uC0AD\uC81C")));
+};
+exports.NoticePage = NoticePage;
+
+
+/***/ }),
+
+/***/ "./components/announce/PostPage.tsx":
+/*!******************************************!*\
+  !*** ./components/announce/PostPage.tsx ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PostPage = void 0;
+const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
+const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "../node_modules/semantic-ui-react/dist/es/index.js");
+const react_textarea_autosize_1 = __webpack_require__(/*! react-textarea-autosize */ "../node_modules/react-textarea-autosize/dist/react-textarea-autosize.browser.esm.js");
+const Context_1 = __webpack_require__(/*! ../../Context */ "./Context/index.ts");
+const PostPage = () => {
+    const [title, setTitle] = React.useState('');
+    const [body, setBody] = React.useState('');
+    const { user } = React.useContext(Context_1.UserContext);
+    const { postContent } = React.useContext(Context_1.NoticeContext);
+    const clear = () => {
+        setTitle('');
+        setBody('');
+    };
+    const handleNameChange = (event) => {
+        event.preventDefault();
+        setTitle(event.currentTarget.value);
+    };
+    const handleBodyChange = (event) => {
+        event.preventDefault();
+        setBody(event.currentTarget.value);
+    };
+    const PostContent = (event) => {
+        event.preventDefault();
+        const payload = {
+            title: title,
+            writer: {
+                name: user.name,
+                id: user.id,
+            },
+            body: body,
         };
-        this.state = {
-            user: null,
-            account: null,
-        };
-        this.SignInWithGoogle = this.SignInWithGoogle.bind(this);
-        this.SignOut = this.SignOut.bind(this);
-        this.fetchAccount = this.fetchAccount.bind(this);
-    }
-    render() {
-        return (React.createElement("div", { className: "LogIn" },
-            React.createElement("header", null,
-                this.state.account
-                    ? React.createElement("p", null,
-                        "Hello, ",
-                        this.state.account.name)
-                    : React.createElement("p", null, "Please sign in."),
-                this.state.user
-                    ? React.createElement("button", { onClick: this.SignOut }, "Sign out")
-                    : React.createElement(this.SignInWithGoogle, null)),
-            this.state.user
-                ? React.createElement(React.Fragment, null)
-                :
-                    React.createElement("div", null,
-                        React.createElement(semantic_ui_react_1.Container, null,
-                            React.createElement("input", { id: 'user_email' }),
-                            React.createElement("input", { id: 'user_pw' }),
-                            React.createElement(this.SignIn, null)),
-                        React.createElement(semantic_ui_react_1.Container, null,
-                            React.createElement(semantic_ui_react_1.Button, { as: react_router_dom_1.Link, to: '/login/create account' }, "\uD68C\uC6D0\uAC00\uC785")))));
-    }
-    componentDidMount() {
-        firebaseConfig_1.auth.onAuthStateChanged(user => {
-            if (user) {
-                client_1.fetchAccount(user.uid).then(result => {
-                    this.setState({
-                        user: user,
-                        account: result.data.account,
-                    });
-                    this.render();
-                });
-            }
-        });
-    }
-    fetchAccount(keyVal) {
-        client_1.fetchAccount(keyVal).then(response => {
-            console.log(response.data.account);
-            if (response.data.account) {
-                console.log('login!');
-                this.setState({
-                    account: response.data.account
-                });
-            }
-            else {
-                console.log("no account!");
-            }
+        postContent(payload).then(() => {
+            clear();
         }).catch(err => {
-            console.log('account fetch failed:', err);
+            console.log("post failed!");
+            console.log(err);
         });
-    }
-    deleteAccount(keyVal) {
-        client_1.deleteAccount(keyVal).then(result => {
-        });
-    }
-}
-exports.LogIn = LogIn;
+    };
+    return (React.createElement("div", null,
+        React.createElement("h1", null, "\uACF5\uC9C0\uC0AC\uD56D - \uAE00\uC4F0\uAE30"),
+        React.createElement(semantic_ui_react_1.Segment, { basic: true, textAlign: 'center' },
+            React.createElement(semantic_ui_react_1.Form, { onSubmit: PostContent },
+                React.createElement(semantic_ui_react_1.TextArea, { rows: 1, placeholder: '\uC81C\uBAA9', value: title, onChange: handleNameChange }),
+                React.createElement(semantic_ui_react_1.Form.Field, null,
+                    React.createElement(react_textarea_autosize_1.default, { placeholder: '\uB0B4\uC6A9\uC744 \uC785\uB825\uD558\uC138\uC694', value: body, onChange: handleBodyChange })),
+                React.createElement(semantic_ui_react_1.Button, { primary: true, type: 'submit' }, "\uD655\uC778")))));
+};
+exports.PostPage = PostPage;
 
 
 /***/ }),
 
-/***/ "./components/main.tsx":
-/*!*****************************!*\
-  !*** ./components/main.tsx ***!
-  \*****************************/
+/***/ "./components/announce/index.ts":
+/*!**************************************!*\
+  !*** ./components/announce/index.ts ***!
+  \**************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MainMenu = void 0;
-const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
-const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "../node_modules/semantic-ui-react/dist/es/index.js");
-const react_router_dom_1 = __webpack_require__(/*! react-router-dom */ "../node_modules/react-router-dom/esm/react-router-dom.js");
-const login_1 = __webpack_require__(/*! ./login */ "./components/login/index.ts");
-class MainMenu extends React.Component {
-    constructor(props, state) {
-        super(props);
-        this.state = {
-            user: null,
-            lesson: false
-        };
-    }
-    OpenOrCloseLessonMenu() {
-        if (!this.state.lesson) {
-            this.setState({ lesson: true });
-            document.getElementById("lesson").style.display = "block";
-        }
-        else {
-            this.setState({ lesson: false });
-            document.getElementById("lesson").style.display = "none";
-        }
-    }
-    render() {
-        const lessonMenu = [
-            'reservation',
-            'my schedule',
-            'list'
-        ];
-        const lessonMenu_kr = new Map([
-            ['reservation', '예약'],
-            ['my schedule', '나의 수업'],
-            ['list', '명단']
-        ]);
-        return (React.createElement(semantic_ui_react_1.Menu, { inverted: true, vertical: true, fixed: 'left' },
-            React.createElement(semantic_ui_react_1.Menu.Item, { as: react_router_dom_1.Link, to: '/' },
-                "Home",
-                React.createElement(semantic_ui_react_1.Icon, { name: 'home' })),
-            React.createElement(semantic_ui_react_1.Menu.Item, null,
-                "Menu",
-                React.createElement(semantic_ui_react_1.Icon, { name: 'list' }),
-                React.createElement(semantic_ui_react_1.Menu.Menu, null,
-                    React.createElement(semantic_ui_react_1.Menu.Item, { key: "announcements", as: react_router_dom_1.NavLink, to: { pathname: `/announcements` } }, "\uACF5\uC9C0\uC0AC\uD56D"),
-                    React.createElement(semantic_ui_react_1.Menu.Item, null,
-                        "\uC218\uC5C5",
-                        React.createElement("div", { id: "schedule" },
-                            React.createElement(semantic_ui_react_1.Menu.Menu, null,
-                                React.createElement(semantic_ui_react_1.Menu.Menu, null, lessonMenu.map(item => React.createElement(semantic_ui_react_1.Menu.Item, { key: item, as: react_router_dom_1.NavLink, to: { pathname: `/schedule/${item}` } }, lessonMenu_kr.get(item)))))))))));
-    }
-    componentDidMount() {
-        login_1.auth.onAuthStateChanged(user => {
-            if (user) {
-                this.setState({ user: user });
-            }
-        });
-    }
-}
-exports.MainMenu = MainMenu;
+__exportStar(__webpack_require__(/*! ./NoticeList */ "./components/announce/NoticeList.tsx"), exports);
+__exportStar(__webpack_require__(/*! ./PostPage */ "./components/announce/PostPage.tsx"), exports);
+__exportStar(__webpack_require__(/*! ./NoticePage */ "./components/announce/NoticePage.tsx"), exports);
 
 
 /***/ }),
@@ -88710,18 +89023,12 @@ const React = __webpack_require__(/*! react */ "../node_modules/react/index.js")
 const react_calendar_1 = __webpack_require__(/*! react-calendar */ "../node_modules/react-calendar/dist/esm/index.js");
 const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "../node_modules/semantic-ui-react/dist/es/index.js");
 const react_router_dom_1 = __webpack_require__(/*! react-router-dom */ "../node_modules/react-router-dom/esm/react-router-dom.js");
-;
-;
-class CalendarPage extends React.Component {
-    constructor(props) {
-        super(props);
-        this.render = () => React.createElement(semantic_ui_react_1.Container, null,
-            React.createElement(react_router_dom_1.Route, { render: ({ history }) => (React.createElement(react_calendar_1.default, { onChange: value => history.push(`/schedule/reservation/${value.toDateString()}`) })) }));
-        this.state = {
-            date: new Date()
-        };
-    }
-}
+const CalendarPage = () => {
+    return (React.createElement(semantic_ui_react_1.Container, null,
+        React.createElement(react_router_dom_1.Route, { render: ({ history }) => (React.createElement(react_calendar_1.default, { onChange: value => {
+                    history.push(`/schedule/reservation/${value.toDateString()}`);
+                } })) })));
+};
 exports.CalendarPage = CalendarPage;
 
 
@@ -88740,7 +89047,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PartListPage = void 0;
 const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
 const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "../node_modules/semantic-ui-react/dist/es/index.js");
-const client_1 = __webpack_require__(/*! ./client */ "./components/schedule/client.ts");
+const Context_1 = __webpack_require__(/*! ../../Context */ "./Context/index.ts");
 class PartListPage extends React.Component {
     constructor(props) {
         super(props);
@@ -88779,7 +89086,7 @@ class PartListPage extends React.Component {
     }
     fetchStudentsList(part) {
         let { date } = this.props.match.params;
-        client_1.fetchStudentsList(date, part).then(response => {
+        this.context.fetchStudentsList(date, part).then(response => {
             this.setState({
                 selected: part,
                 studentsList: response.data.list
@@ -88790,6 +89097,7 @@ class PartListPage extends React.Component {
     }
 }
 exports.PartListPage = PartListPage;
+PartListPage.contextType = Context_1.ScheduleContext;
 
 
 /***/ }),
@@ -88807,131 +89115,36 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PartPage = void 0;
 const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
 const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "../node_modules/semantic-ui-react/dist/es/index.js");
-const client_1 = __webpack_require__(/*! ./client */ "./components/schedule/client.ts");
-const login_1 = __webpack_require__(/*! ../login */ "./components/login/index.ts");
-class PartPage extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            user: null,
-            account: null,
-            keyVal: ''
-        };
-        this.Reserve = this.Reserve.bind(this);
-    }
-    render() {
-        const { date } = this.props.match.params;
-        console.log("date: ", date);
-        return (React.createElement("div", null,
-            React.createElement("h2", null, date),
-            React.createElement("h3", null, this.state.account ? this.state.account.name : null),
-            React.createElement(semantic_ui_react_1.Container, null,
-                React.createElement(semantic_ui_react_1.Container, null,
-                    React.createElement(semantic_ui_react_1.Button, { onClick: () => this.Reserve('morning') }, "\uC624\uC804")),
-                " ",
-                React.createElement("br", null),
-                React.createElement(semantic_ui_react_1.Container, null,
-                    React.createElement(semantic_ui_react_1.Button, { onClick: () => this.Reserve('noon') }, "\uC810\uC2EC\uC2DC\uAC04"),
-                    React.createElement(semantic_ui_react_1.Comment, null, "\uC218\uAC15\uC0DD\uC774 \uC801\uC740 \uACBD\uC6B0 \uC218\uC5C5\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.")),
-                " ",
-                React.createElement("br", null),
-                React.createElement(semantic_ui_react_1.Container, null,
-                    React.createElement(semantic_ui_react_1.Button, { onClick: () => this.Reserve('afternoon') }, "\uC624\uD6C4")))));
-    }
-    ;
-    componentDidMount() {
-        login_1.auth.onAuthStateChanged(user => {
-            this.setState({ user: user });
-            login_1.fetchAccount(user.uid).then(response => {
-                this.setState({ account: response.data.account });
-            });
-        });
-    }
-    Reserve(part) {
-        const { date } = this.props.match.params;
-        let _id = this.state.user.uid;
+const Context_1 = __webpack_require__(/*! ../../Context */ "./Context/index.ts");
+const PartPage = ({ match }) => {
+    const { date } = match.params;
+    const { user } = React.useContext(Context_1.UserContext);
+    const { postSchedule } = React.useContext(Context_1.ScheduleContext);
+    const Reserve = (part) => {
+        let _id = user.id;
         let content = {
             date: date,
             part: part,
         };
-        client_1.postScheduletoAccount(_id, content).then(result => {
-            if (result.data.result === "already exist") {
-                alert("이미 신청되어 있습니다.");
-            }
-            else {
-                let student = {
-                    key: _id,
-                    name: this.state.account.name,
-                };
-                client_1.postStudentToList(date, part, student);
-                alert("신청되었습니다.");
-            }
-        });
-    }
-}
+        postSchedule(content);
+    };
+    return (React.createElement("div", null,
+        React.createElement("h2", null, date),
+        React.createElement("h3", null, user ? user.name : null),
+        React.createElement(semantic_ui_react_1.Container, null,
+            React.createElement(semantic_ui_react_1.Container, null,
+                React.createElement(semantic_ui_react_1.Button, { onClick: () => Reserve('morning') }, "\uC624\uC804")),
+            " ",
+            React.createElement("br", null),
+            React.createElement(semantic_ui_react_1.Container, null,
+                React.createElement(semantic_ui_react_1.Button, { onClick: () => Reserve('noon') }, "\uC810\uC2EC\uC2DC\uAC04"),
+                React.createElement(semantic_ui_react_1.Comment, null, "\uC218\uAC15\uC0DD\uC774 \uC801\uC740 \uACBD\uC6B0 \uC218\uC5C5\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.")),
+            " ",
+            React.createElement("br", null),
+            React.createElement(semantic_ui_react_1.Container, null,
+                React.createElement(semantic_ui_react_1.Button, { onClick: () => Reserve('afternoon') }, "\uC624\uD6C4")))));
+};
 exports.PartPage = PartPage;
-
-
-/***/ }),
-
-/***/ "./components/schedule/client.ts":
-/*!***************************************!*\
-  !*** ./components/schedule/client.ts ***!
-  \***************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteStudentOfSchedule = exports.cancelScheduleOfAccount = exports.fetchSchedulefromAccount = exports.fetchStudentsList = exports.fetchScheduleList = exports.postStudentToList = exports.postScheduletoAccount = void 0;
-const clientConfig_1 = __webpack_require__(/*! ../clientConfig */ "./components/clientConfig.ts");
-const postStudentToList = (date, part, payload, cancelToken = null) => {
-    return clientConfig_1.instance.post(`/schedule/${date}/${part}`, payload, {
-        cancelToken
-    });
-};
-exports.postStudentToList = postStudentToList;
-const postScheduletoAccount = (key, payload, params = {}, cancelToken = null) => {
-    return clientConfig_1.instance.post(`/accounts/${key}/schedule`, payload, {
-        params,
-        cancelToken
-    });
-};
-exports.postScheduletoAccount = postScheduletoAccount;
-const fetchScheduleList = (params = {}, cancelToken = null) => {
-    return clientConfig_1.instance.get(`/schedule`, {
-        params,
-        cancelToken
-    });
-};
-exports.fetchScheduleList = fetchScheduleList;
-const fetchStudentsList = (date, part, params = {}, cancelToken = null) => {
-    return clientConfig_1.instance.get(`/schedule/${date}/${part}`, {
-        params,
-        cancelToken
-    });
-};
-exports.fetchStudentsList = fetchStudentsList;
-const fetchSchedulefromAccount = (key, params = {}, cancelToken = null) => {
-    return clientConfig_1.instance.get(`/accounts/${key}/schedule`, {
-        params,
-        cancelToken
-    });
-};
-exports.fetchSchedulefromAccount = fetchSchedulefromAccount;
-const cancelScheduleOfAccount = (key, id, cancelToken = null) => {
-    return clientConfig_1.instance.delete(`/accounts/${key}/schedule/${id}`, {
-        cancelToken
-    });
-};
-exports.cancelScheduleOfAccount = cancelScheduleOfAccount;
-const deleteStudentOfSchedule = (date, part, key, cancelToken = null) => {
-    return clientConfig_1.instance.delete(`schedule/${date}/${part}/${key}`, {
-        cancelToken
-    });
-};
-exports.deleteStudentOfSchedule = deleteStudentOfSchedule;
 
 
 /***/ }),
@@ -88959,7 +89172,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(__webpack_require__(/*! ./CalendarPage */ "./components/schedule/CalendarPage.tsx"), exports);
 __exportStar(__webpack_require__(/*! ./CalendarListPage */ "./components/schedule/CalendarListPage.tsx"), exports);
 __exportStar(__webpack_require__(/*! ./my_schedule */ "./components/schedule/my_schedule.tsx"), exports);
-__exportStar(__webpack_require__(/*! ./my_schedule_element */ "./components/schedule/my_schedule_element.tsx"), exports);
 __exportStar(__webpack_require__(/*! ./PartPage */ "./components/schedule/PartPage.tsx"), exports);
 __exportStar(__webpack_require__(/*! ./PartListPage */ "./components/schedule/PartListPage.tsx"), exports);
 
@@ -88978,43 +89190,17 @@ __exportStar(__webpack_require__(/*! ./PartListPage */ "./components/schedule/Pa
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MyScheduleList = void 0;
 const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
-const login_1 = __webpack_require__(/*! ../login */ "./components/login/index.ts");
 const my_schedule_element_1 = __webpack_require__(/*! ./my_schedule_element */ "./components/schedule/my_schedule_element.tsx");
-;
-;
-class MyScheduleList extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            user: null,
-            account: null,
-        };
-    }
-    render() {
-        return (React.createElement("div", null,
-            React.createElement("h1", null, "\uB098\uC758 \uC218\uC5C5"),
-            React.createElement("h2", null, this.state.account ?
-                this.state.account.name
-                : "로그인 하십시오."),
-            React.createElement(my_schedule_element_1.MyScheduleElement, null)));
-    }
-    componentWillUnmount() {
-    }
-    componentDidMount() {
-        login_1.auth.onAuthStateChanged(user => {
-            if (user) {
-                login_1.fetchAccount(user.uid).then(result => {
-                    this.setState({
-                        user: user,
-                        account: result.data.account,
-                    });
-                });
-            }
-            else {
-            }
-        });
-    }
-}
+const Context_1 = __webpack_require__(/*! ../../Context */ "./Context/index.ts");
+const MyScheduleList = () => {
+    const { user } = React.useContext(Context_1.UserContext);
+    return (React.createElement("div", null,
+        React.createElement("h1", null, "\uB098\uC758 \uC218\uC5C5"),
+        React.createElement("h2", null, user !== undefined ?
+            user.name
+            : "로그인 하십시오."),
+        React.createElement(my_schedule_element_1.default, null)));
+};
 exports.MyScheduleList = MyScheduleList;
 
 
@@ -89030,58 +89216,32 @@ exports.MyScheduleList = MyScheduleList;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MyScheduleElement = void 0;
 const React = __webpack_require__(/*! react */ "../node_modules/react/index.js");
 const semantic_ui_react_1 = __webpack_require__(/*! semantic-ui-react */ "../node_modules/semantic-ui-react/dist/es/index.js");
-const client_1 = __webpack_require__(/*! ./client */ "./components/schedule/client.ts");
-const login_1 = __webpack_require__(/*! ../login */ "./components/login/index.ts");
-class MyScheduleElement extends React.Component {
-    constructor(props) {
-        super(props);
-        this.render = () => {
-            const listItems = this.state.schedule.map(schedule => React.createElement(semantic_ui_react_1.List.Item, { key: schedule.id },
+const Context_1 = __webpack_require__(/*! ../../Context */ "./Context/index.ts");
+const MyScheduleElement = () => {
+    const [schedules, setSchedules] = React.useState(undefined);
+    const { scheduleList, cancelSchedule } = React.useContext(Context_1.ScheduleContext);
+    const { user } = React.useContext(Context_1.UserContext);
+    const CancelLesson = (id, date, part) => {
+        if (user) {
+            cancelSchedule(id, {
+                date: date,
+                part: part,
+            });
+        }
+    };
+    React.useEffect(() => {
+        setSchedules(scheduleList);
+    }, [scheduleList]);
+    return (React.createElement("div", null, schedules !== undefined ?
+        React.createElement(semantic_ui_react_1.List, { items: schedules.map(schedule => React.createElement(semantic_ui_react_1.List.Item, { key: schedule.id },
                 schedule.date,
                 schedule.part,
-                React.createElement(semantic_ui_react_1.Button, { onClick: () => this.CancelLesson(schedule.id, schedule.date, schedule.part) }, "\uCDE8\uC18C")));
-            return (React.createElement("div", null, this.state.schedule.length !== 0 ?
-                React.createElement(semantic_ui_react_1.List, { items: listItems }) :
-                React.createElement("span", null, "\uC218\uC5C5\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.")));
-        };
-        this.state = {
-            schedule: []
-        };
-        this.FetchList = this.FetchList.bind(this);
-    }
-    componentDidMount() {
-        this.FetchList();
-    }
-    componentDidUpdate() {
-        this.render();
-    }
-    FetchList() {
-        login_1.auth.onAuthStateChanged(user => {
-            if (user) {
-                client_1.fetchSchedulefromAccount(user.uid).then(response => {
-                    this.setState({ schedule: response.data.schedule });
-                    console.log(this.state.schedule);
-                }).catch(err => {
-                    console.log("schedule fetch error!");
-                });
-            }
-        });
-    }
-    CancelLesson(id, date, part) {
-        login_1.auth.onAuthStateChanged(user => {
-            if (user) {
-                console.log("cancel schedule");
-                client_1.cancelScheduleOfAccount(user.uid, id);
-                client_1.deleteStudentOfSchedule(date, part, user.uid);
-                this.FetchList();
-            }
-        });
-    }
-}
-exports.MyScheduleElement = MyScheduleElement;
+                React.createElement(semantic_ui_react_1.Button, { onClick: () => CancelLesson(schedule.id, schedule.date, schedule.part) }, "\uCDE8\uC18C"))) }) :
+        React.createElement("span", null, "\uC218\uC5C5\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.")));
+};
+exports.default = MyScheduleElement;
 
 
 /***/ })

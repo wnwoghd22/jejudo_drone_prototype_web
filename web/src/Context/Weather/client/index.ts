@@ -82,8 +82,19 @@ const fetchWeather = async () : Promise<IWeather> => {
             console.log(result);
         })
     })*/
-    let response = await fetch(weather_url);
+
+    fetch(weather_url, {
+        mode: 'no-cors'
+    }).then(response => {
+        console.log('weather : ', response);
+    })
+
+    let response = await fetch(weather_url, {
+        mode: 'no-cors',
+    });
+    console.log(response);
     let data = await response.json();
+    console.log(data);
     
     let itemList : Item[] = data.response.body.items.item;
     console.log(itemList);

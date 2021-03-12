@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { auth } from './firebaseConfig';
+import { auth, session, local } from './firebaseConfig';
 import * as Client from './client';
 
 const defaultContext : IUserContext = {
@@ -23,19 +23,26 @@ const UserContextProvider = ({children} : Props) => {
     const [user, setUser] = React.useState<IUser | undefined>(undefined);
 
     const login = (email: string, password: string) : void => {
-        auth.signInWithEmailAndPassword(email, password).then(result => {
-            Client.fetchAccount(result.user.uid).then(response => {
-                setUser(response.data.account);
-                setIsLoading(true);
+        auth.setPersistence(session).then(() => {
+            return auth.signInWithEmailAndPassword(email, password).then(result => {
+                Client.fetchAccount(result.user.uid).then(response => {
+                    setUser(response.data.account);
+                    setIsLoading(true);
+                });
             });
-        })
+        });
     }
 
     const fetchUser = (uid: string) : void => {
+        setIsLoading(false);
         Client.fetchAccount(uid).then(response => {
             setUser(response.data.account);
             setIsLoading(true);
-        });
+        }).catch(err => {
+            console.log(err);
+            setUser(undefined);
+            setIsLoading(true);
+        })
     }
 
     const createUser = (user: IUser) : void => {
@@ -56,8 +63,10 @@ const UserContextProvider = ({children} : Props) => {
 
     React.useEffect(() => {
         auth.onAuthStateChanged(user => {
-
-        })
+            if(user) {
+                fetchUser(user.uid);
+            }
+        });
     }, []);
 
     return (
