@@ -3,27 +3,18 @@ import { render } from 'react-dom';
 import { Switch } from 'react-router';
 import * as Firebaseui from 'firebaseui'
 import { BrowserRouter, Redirect, Route, Link } from 'react-router-dom';
+
 import { NoticeList, NoticePage , PostPage } from './announce';
 import { Button, Container } from 'semantic-ui-react';
 import { CalendarPage, CalendarListPage, PartPage, PartListPage, MyScheduleList } from './schedule';
 import { LoginPage, AccountPage } from './User'
 
-interface boxprops {
+import { UserContext } from '../Context';
 
-}
-interface boxstate {
-    user?,
-}
+const SwitchBox = () => {
+    const {user} = React.useContext<IUserContext>(UserContext);
 
-export class SwitchBox extends React.Component<boxprops, boxstate> {
-    constructor(props: boxprops) {
-        super(props);
-
-        this.state = {
-            user: null,
-        }
-    }
-    public render = () => (
+    return (
         <Container>
             <Switch>
                 <Route
@@ -80,7 +71,7 @@ export class SwitchBox extends React.Component<boxprops, boxstate> {
                                     as = {Link}
                                     to = '/login'
                                 >{
-                                    this.state.user ?
+                                    user !== undefined ?
                                     '회원 정보' :
                                     'log in'
                                 }
@@ -92,4 +83,6 @@ export class SwitchBox extends React.Component<boxprops, boxstate> {
             </Switch>
         </Container>
     );
-};
+}
+
+export default SwitchBox;

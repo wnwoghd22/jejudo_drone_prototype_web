@@ -7,17 +7,6 @@ const MyScheduleElement = () => {
     const {scheduleList, cancelSchedule} = React.useContext<IScheduleContext>(ScheduleContext);
     const {user} = React.useContext<IUserContext>(UserContext);
 
-    const listItems = schedules.map(schedule =>
-        <List.Item key = {schedule.id}>
-            {schedule.date}
-            {schedule.part}
-                <Button onClick = {() =>
-                    CancelLesson(schedule.id, schedule.date, schedule.part)}>
-                    취소
-                </Button>
-        </List.Item>
-    );
-
     const CancelLesson = (id: string, date: string, part: string)  => {
         if(user) {
             cancelSchedule(id, {
@@ -35,7 +24,17 @@ const MyScheduleElement = () => {
         <div>
             {
                 schedules !== undefined ?  
-                <List items = {listItems}/> :
+                <List items = {
+                    schedules.map(schedule =>
+                    <List.Item key = {schedule.id}>
+                        {schedule.date}
+                        {schedule.part}
+                            <Button onClick = {() =>
+                                CancelLesson(schedule.id, schedule.date, schedule.part)}>
+                                취소
+                            </Button>
+                    </List.Item>
+                )}/> :
                 <span>수업이 없습니다.</span>
             }
         </div>

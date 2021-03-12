@@ -2,7 +2,7 @@ import * as React from 'react';
 import { render } from 'react-dom';
 import { BrowserRouter, Redirect, Route } from 'react-router-dom';
 import { MainMenu } from './components/main';
-import { SwitchBox } from './components/SwitchBox';
+import SwitchBox from './components/SwitchBox';
 import { Container } from 'semantic-ui-react';
 
 import * as Context from './Context';
