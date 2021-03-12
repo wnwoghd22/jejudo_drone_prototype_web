@@ -130,12 +130,12 @@ const NoticeList = () => {
         return paginatorBtnList;
     }
 
-    const tableRows = buildElement_rowList();
-    const paginatorBtnList = buildElement_paginator();
-
     if (list === undefined) {
         return <></>;
     }
+
+    const tableRows = buildElement_rowList();
+    const paginatorBtnList = buildElement_paginator();
 
     return (
         <div>

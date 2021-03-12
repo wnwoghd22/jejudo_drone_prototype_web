@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Segment, Comment, Header } from 'semantic-ui-react';
 
+//import { } from 
+
 import { NoticeContext } from '../../Context';
 
 interface Props {
@@ -9,17 +11,30 @@ interface Props {
 
 const NoticeForm = ({keyVal} : Props) => {
     const [notice, setNotice] = React.useState<INotice | undefined>(undefined);
-    const {content, fetchContent} = React.useContext<INoticeContext>(NoticeContext);
+    const {isLoading, content, fetchContent} = React.useContext<INoticeContext>(NoticeContext);
+    const [dateVal, setDateVal] = React.useState<string>('');
 
     React.useEffect(() => {
-        setNotice(content);
+        if (content !== undefined) {
+            setNotice(content); 
+        }
     }, [content]);
 
     React.useEffect(() => {
-        fetchContent(keyVal);
-    }, [keyVal]);
+        if (notice !== undefined) {
+            setDateVal(notice.date.toString());
+        }
+    }, [notice]);
 
-    const dateVal = notice.date.toString();
+    React.useEffect(() => {
+        fetchContent(keyVal);
+    }, []);
+
+    if (notice === undefined) {
+        return (
+            <></>
+        );
+    }
 
     return (
         <Comment.Group>
