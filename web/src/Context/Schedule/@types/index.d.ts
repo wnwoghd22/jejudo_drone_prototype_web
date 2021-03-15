@@ -2,13 +2,19 @@ interface ISchedule {
     id?: string;
     date?: string;
     part?: string;
+    /** 대기 순번 */
+    index?: number;
+    /** 전체 대기열 */
+    length?: number;
 }
 
 /**
- * 특정 수업의 학생 수, 명단 등을 저장
+ * 특정 일자의 수강 신청자 수를 저장
  */
 interface IDayInfo {
-    
+    morning: number;
+    noon: number;
+    afternoon: number;
 }
 
 interface IScheduleContext {
@@ -24,7 +30,7 @@ interface IScheduleContext {
      */
     cancelSchedule: (id: string, time: ISchedule) => void;
 
-    dayInfo?: IDayInfo | undefined;
-
+    dayInfo: IDayInfo | undefined;
+    fetchDayInfo: (date: string) => void;
     
 }

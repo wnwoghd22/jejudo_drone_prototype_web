@@ -6,7 +6,9 @@ import { UserContext } from '../User';
 const defaultContext : IScheduleContext = {
     isLoading: false,
     scheduleList: undefined,
+    dayInfo: undefined,
     fetchScheduleList: () => {},
+    fetchDayInfo: () => {},
     postSchedule: () => {},
     cancelSchedule: () => {},
 }
@@ -20,16 +22,27 @@ interface Props {
 const ScheduleContextProvider = ({ children } : Props) => {
     const {user} = React.useContext(UserContext);
 
+    const [ dayInfo, setDayInfo ] = React.useState<IDayInfo | undefined>(undefined);
     const [ scheduleList, setScheduleList ] = React.useState<Array<ISchedule> | undefined>(undefined);
     const [ isLoading, setIsLoading ] = React.useState<boolean>(false);
 
     const fetchScheduleList = () : void => {
         Client.fetchSchedulefromAccount(user.id).then(response => {
             if (response.data.schedule) {
-                console.log(response.data.schedule);
                 setScheduleList(response.data.schedule);
             }
             setIsLoading(true);
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+
+    const fetchDayInfo = (date: string) => {
+        Client.fetchDayInfo(date).then(response => {
+            if(response.data.info) {
+                console.log(response.data.info);
+                setDayInfo(response.data.info);
+            }
         }).catch(err => {
             console.log(err);
         })
@@ -50,11 +63,10 @@ const ScheduleContextProvider = ({ children } : Props) => {
                     console.log(err.response.data);
                 });
             }
-        })
+        });
     }
 
     const cancelSchedule = (id: string, time: ISchedule) : void => {
-        
         Client.cancelScheduleOfAccount(user.id, id);
         Client.deleteStudentOfSchedule(time.date, time.part, user.id);
         fetchScheduleList();
@@ -62,7 +74,6 @@ const ScheduleContextProvider = ({ children } : Props) => {
 
     React.useEffect(() => {
         if(user !== undefined) {
-            console.log('user loaded!');
             fetchScheduleList();
         }
     }, [user]);
@@ -74,7 +85,9 @@ const ScheduleContextProvider = ({ children } : Props) => {
             value = {{
                 isLoading,
                 scheduleList,
+                dayInfo,
                 fetchScheduleList,
+                fetchDayInfo,
                 postSchedule,
                 cancelSchedule,
             }}

@@ -22,6 +22,13 @@ Promise<AxiosResponse<{ schedule: ISchedule[] }>> => {
         cancelToken
     });
 };
+const fetchDayInfo = (date: string, params = {}, cancelToken = null) :
+Promise<AxiosResponse<{ info : IDayInfo }>> => {
+    return instance.get(`/schedule/${date}`, {
+        params,
+        cancelToken
+    });
+};
 const fetchStudentsList = (date: string, part: string, params = {}, cancelToken = null) :
 Promise<AxiosResponse<{ list: IUser[] }>> => {
     return instance.get(`/schedule/${date}/${part}`, {
@@ -52,5 +59,5 @@ Promise<AxiosResponse<{ result: string }>> => {
 
 
 export { postScheduletoAccount, postStudentToList,
-    fetchScheduleList, fetchStudentsList, fetchSchedulefromAccount,
+    fetchScheduleList, fetchDayInfo, fetchStudentsList, fetchSchedulefromAccount,
     cancelScheduleOfAccount, deleteStudentOfSchedule }

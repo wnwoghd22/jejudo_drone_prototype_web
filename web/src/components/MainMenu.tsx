@@ -7,17 +7,16 @@ import { UserContext } from '../Context';
 const MainMenu = () => {
     const [lesson, setLesson] = React.useState<boolean>(false);
     const {user} = React.useContext<IUserContext>(UserContext);
+    const scheduleTab = document.getElementById("schedule");
 
     const OpenOrCloseLessonMenu = () => {
-        if(!lesson)
-        {
+        if(!lesson) {
             setLesson(true);
-            document.getElementById("lesson").style.display = "block";
+            scheduleTab.style.display = "block";
         }
-        else
-        {
+        else {
             setLesson(false);
-            document.getElementById("lesson").style.display = "none";
+            scheduleTab.style.display = "none";
         }
     }
 
@@ -52,7 +51,7 @@ const MainMenu = () => {
                     </Menu.Item>
                     <Menu.Item onClick = {OpenOrCloseLessonMenu}>
                         수업
-                        <div id = "schedule">  
+                        <div id = "schedule" style = {{display: "none"}}>  
                             <Menu.Menu>
                                 <Menu.Menu>
                                     { lessonMenu.map(item =>

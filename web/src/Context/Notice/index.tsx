@@ -26,7 +26,6 @@ const NoticeContextProvider = ({children} : Props) => {
     const fetchList = () => {
         setIsLoading(false);
         Client.fetchNoticeList().then(response => {
-            console.log(response.data);
             setList(response.data.announcements);
             setIsLoading(true);
         }).catch(err => {
@@ -62,6 +61,8 @@ const NoticeContextProvider = ({children} : Props) => {
     React.useEffect(() => {
         fetchList();
     }, []);
+
+    console.log(list);
 
     return (
         <NoticeContext.Provider

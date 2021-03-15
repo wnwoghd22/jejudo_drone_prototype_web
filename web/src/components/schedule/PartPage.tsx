@@ -14,9 +14,13 @@ interface Props {
 const PartPage = ({match} : Props) => {
     const {date} = match.params;
     const {user} = React.useContext<IUserContext>(UserContext);
-    const {postSchedule} = React.useContext<IScheduleContext>(ScheduleContext);
+    const {postSchedule, dayInfo, fetchDayInfo} = React.useContext<IScheduleContext>(ScheduleContext);
 
     const Reserve = (part: string) => {
+        if(user === undefined) {
+            alert('로그인이 필요한 서비스입니다.');
+            return;
+        }
         let _id = user.id;
         
         let content = {
@@ -26,6 +30,14 @@ const PartPage = ({match} : Props) => {
         
         postSchedule(content);
     }
+
+    React.useEffect(() => {
+        fetchDayInfo(date);
+    }, []);
+
+    React.useEffect(() => {
+        console.log(dayInfo);
+    }, [dayInfo]);
 
     return (
         <div>
